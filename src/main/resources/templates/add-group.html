@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pievienot grupu</title>
+    <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<style>
+        .form-control {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+    <div class="container">
+        <h3>Pievienot grupu</h3>
+        <div class="card">
+			<a href="/groups" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+            <div class="card-body">
+                <form action="#" th:action="@{/add-group}" th:object="${group}" method="post">
+					<div class="form-group">
+						<label>Nosaukums</label> 
+						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"/>
+					</div>
+					<div class="form-group">
+						<label>Studentu skaits</label> 
+						<input type="text" th:field="*{numberOfStudents}" class="form-control" id="numberOfStudents" placeholder="Studentu skaits"/>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.1</label>
+						<select th:field ="*{course1}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.2</label>
+						<select th:field ="*{course2}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.3</label>
+						<select th:field ="*{course3}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.4</label>
+						<select th:field ="*{course4}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.5</label>
+						<select th:field ="*{course5}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.6</label>
+						<select th:field ="*{course6}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.7</label>
+						<select th:field ="*{course7}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.8</label>
+						<select th:field ="*{course8}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.9</label>
+						<select th:field ="*{course9}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.10</label>
+						<select th:field ="*{course10}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Kurs Nr.11</label>
+						<select th:field ="*{course11}" class="form-control">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+					</div>
+					<input type="submit" style="position: relative; right: -175px;" class="btn btn-primary" value="Iesniegt">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

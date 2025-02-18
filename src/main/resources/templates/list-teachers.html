@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Visi pasniedzēji</title>
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<script th:inline="javascript">
+        function confirmDeletion() {
+            return confirm("Vai tiešām vēlaties dzēst?");
+        }
+        window.onload = function() {
+            var errorMsg = /*[[${errormsg}]]*/ '';
+            if (errorMsg) {
+                alert(errorMsg);
+            }
+        }
+    </script>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+	<div class="container" style="padding-left: 300px; padding-right: 300px;">
+		<div class="card">
+			<div class="card-body">
+				<div th:switch="${teachers}" class="container">
+					<div class>
+						<div class="button-container">
+							<a href="/add-teacher" class="btn btn-primary"><i class="fas fa-user-plus"> Pievienot pasniedzēju </i></a>
+						    <a href="/teachers/toggleSort" class="btn btn-primary"><i class="fas fa-sort-alpha-down"> Kārtot </i></a>
+							<form th:action="@{/search-teacher}" class="form-inline">
+						        <input class="form-control" name= "keyword" id = "keyword" type="text" placeholder="Meklēt" aria-label="Search" th:value="${keyword}">
+						        <button class="btn btn-primary" type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+					        </form>
+						</div>
+						<div class="line-separator"></div>
+				    </div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Vārds</th>
+									<th>Amats</th>
+									<th>Var mācīt tikai tiešsaistē</th>
+									<th>Detaļas</th>
+									<th>Rediģēt</th>
+									<th>Dzēst</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="teacher : ${teachers}">
+									<td th:text="${teacher.name}"></td>
+									<td th:text="${teacher.position}"></td>
+									<td th:text="${teacher.onlyOnline ? '✓' : '✕'}"></td>
+									<td><a th:href="@{/teachers/{id}/courses(id=${teacher.id})}" class="btn btn-primary">
+										<i class="fas fa-user-cog"></i></a></td>
+									<td><a th:href="@{/update-teacher/{id}(id=${teacher.id})}" class="btn btn-primary">
+										<i class="fas fa-user-edit"></i></a></td>
+									<td><a th:href="@{/remove-teacher/{id}(id=${teacher.id})}" class="btn btn-primary" 
+										onclick="return confirmDeletion()"><i class="fas fa-user-times"></i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

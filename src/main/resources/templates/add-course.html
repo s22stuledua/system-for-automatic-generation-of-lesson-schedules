@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pievienot kursu</title>
+    <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+    <div class="container">
+        <h3>Pievienot kursu</h3>
+        <div class="card">
+			<a href="/courses" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+            <div class="card-body">
+                <form action="#" th:action="@{/add-course}" th:object="${course}" method="post">
+                    <div class="form-group">
+						<label>Title</label> 
+						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Title"/>
+					</div>
+					<div class="form-group">
+						<label>Nodarbību skaits</label> 
+						<input type="text" th:field="*{numberOfLessons}" class="form-control" id="number_of_lessons" placeholder="Nodarbību skaits"/>
+					</div>
+					<div class="form-group">
+						<label>Pirmais pasniedzējs</label>
+						<select th:field ="*{teacher1}" class="form-control">
+							<option value="" selected>-- Atlasiet pasniedzēju --</option>
+							   <option th:each="teacher: ${teacher}" th:value="${teacher.id}" th:text = "${teacher.name}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Otrais pasniedzējs</label>
+						<select th:field ="*{teacher2}" class="form-control">
+							<option value="" selected>-- Atlasiet pasniedzēju --</option>
+							   <option th:each="teacher: ${teacher}" th:value="${teacher.id}" th:text = "${teacher.name}"></option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.1</label>
+						<select th:field ="*{equipment1}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.2</label>
+						<select th:field ="*{equipment2}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.3</label>
+						<select th:field ="*{equipment3}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.4</label>
+						<select th:field ="*{equipment4}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.5</label>
+						<select th:field ="*{equipment5}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.6</label>
+						<select th:field ="*{equipment6}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.7</label>
+						<select th:field ="*{equipment7}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Aprīkojums Nr.8</label>
+						<select th:field ="*{equipment8}" class="form-control">
+							<option value="" selected>-- Atlasiet aprīkojumu --</option>
+							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
+								 th:value="${equipment}"
+								 th:text="${equipment}">
+							</option>
+						</select>
+					</div>
+					<input type="submit" style="position: relative; right: -175px;" class="btn btn-primary" value="Iesniegt">
+                </form>
+            </div>
+        </div>
+		<div class="content" style="padding: 34px;"></div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

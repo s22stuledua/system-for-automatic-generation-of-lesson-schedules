@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kurs</title>
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<script th:inline="javascript">
+	    function confirmDeletion() {
+		    return confirm("Vai tiešām vēlaties dzēst?");
+	    }
+	    window.onload = function() {
+		    var errorMsg = /*[[${errormsg}]]*/ '';
+		    if (errorMsg) {
+			    alert(errorMsg);
+		    }
+	    }
+    </script>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+	<div class="container">
+		<div class="card">
+			<div th:switch="${courses}" class="container">
+				<div class>
+					<div class="button-container">
+						<a href="/courses" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+						<a th:each="course : ${courses}">
+							<a th:text="'Sīkāka informācija par ' + ${course.title}" style="font-size: 2em;"></a>
+							<a th:href="@{/edit-course/{id}(id=${course.id})}" class="btn btn-primary">
+								<i class="fas fa-user-edit ml-2"> Rediģēt </i></a>
+							<a th:href="@{/remove-course/{id}(id=${course.id})}" class="btn btn-primary" 
+							onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
+						</a>
+					</div>
+					<div class="line-separator"></div>
+			    </div>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nosaukums</th>
+								<th>Nodarbību skaits</th>
+								<th>Pirmais pasniedzējs</th>
+								<th>Otrais pasniedzējs</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="course : ${courses}">
+								<td th:text="${course.title}"></td>
+								<td th:text="${course.numberOfLessons}"></td>
+								<td th:text="${course.teacher1.name}"></td>
+								<td th:text="${course.teacher2!= null ? course.teacher2.name : ''}"></td>
+							</tr>
+						</tbody>
+						<thead>
+							<tr>
+								<th>Aprīkojums Nr.1</th>
+								<th>Aprīkojums Nr.2</th>
+								<th>Aprīkojums Nr.3</th>
+								<th>Aprīkojums Nr.4</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="course : ${courses}">
+								<td th:text="${course.equipment1!= null ? course.equipment1 : ''}"></td>
+								<td th:text="${course.equipment2!= null ? course.equipment2 : ''}"></td>
+								<td th:text="${course.equipment3!= null ? course.equipment3 : ''}"></td>
+								<td th:text="${course.equipment4!= null ? course.equipment4 : ''}"></td>
+							</tr>
+						</tbody>
+						<thead>
+							<tr>
+								<th>Aprīkojums Nr.5</th>
+								<th>Aprīkojums Nr.6</th>
+								<th>Aprīkojums Nr.7</th>
+								<th>Aprīkojums Nr.8</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="course : ${courses}">
+								<td th:text="${course.equipment5!= null ? course.equipment5 : ''}"></td>
+								<td th:text="${course.equipment6!= null ? course.equipment6 : ''}"></td>
+								<td th:text="${course.equipment7!= null ? course.equipment7 : ''}"></td>
+								<td th:text="${course.equipment8!= null ? course.equipment8 : ''}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

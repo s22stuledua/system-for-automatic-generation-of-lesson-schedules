@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Grupa</title>
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<script>
+		function confirmDeletion() {
+		    return confirm("Vai tiešām vēlaties dzēst?");
+		}
+	</script>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+	<div class="container">
+		<div class="card">
+			<div class="card-body">
+				<div th:switch="${groups}" class="container">
+					<div class>
+						<div class="button-container">
+							<a href="/groups" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+							<a th:each="group : ${groups}">
+								<a th:text="'Kursu saraksts priekš ' + ${group.title}" style="font-size: 2em;"></a>
+								<a th:href="@{/edit-group/{id}(id=${group.id})}" class="btn btn-primary">
+									<i class="fas fa-user-edit ml-2"> Rediģēt </i></a>
+								<a th:href="@{/remove-group/{id}(id=${group.id})}" class="btn btn-primary" 
+								onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
+							</a>
+						</div>
+						<div class="line-separator"></div>
+				    </div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Studentu skaits</th>
+									<th>Kurs Nr.1</th>
+									<th>Kurs Nr.2</th>
+									<th>Kurs Nr.3</th>
+									<th>Kurs Nr.4</th>
+									<th>Kurs Nr.5</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="group : ${groups}">
+									<td th:text="${group.numberOfStudents}"></td>
+									<td th:text="${group.course1!= null ? group.course1.title : ''}"></td>
+									<td th:text="${group.course2!= null ? group.course2.title : ''}"></td>
+									<td th:text="${group.course3!= null ? group.course3.title : ''}"></td>
+									<td th:text="${group.course4!= null ? group.course4.title : ''}"></td>
+									<td th:text="${group.course5!= null ? group.course5.title : ''}"></td>
+								</tr>
+							</tbody>
+							<thead>
+								<tr>
+									<th>Kurs Nr.6</th>
+									<th>Kurs Nr.7</th>
+									<th>Kurs Nr.8</th>
+									<th>Kurs Nr.9</th>
+									<th>Kurs Nr.10</th>
+									<th>Kurs Nr.11</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="group : ${groups}">
+									<td th:text="${group.course6!= null ? group.course6.title : ''}"></td>
+									<td th:text="${group.course7!= null ? group.course7.title : ''}"></td>
+									<td th:text="${group.course8!= null ? group.course7.title : ''}"></td>
+									<td th:text="${group.course9!= null ? group.course7.title : ''}"></td>
+									<td th:text="${group.course10!= null ? group.course7.title : ''}"></td>
+									<td th:text="${group.course11!= null ? group.course7.title : ''}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="content" style="padding: 36px;"></div>
+	</div>
+	<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

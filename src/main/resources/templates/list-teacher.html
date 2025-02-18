@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pasniedzējs</title>
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<script th:inline="javascript">
+        function confirmDeletion() {
+            return confirm("Vai tiešām vēlaties dzēst?");
+        }
+        window.onload = function() {
+            var errorMsg = /*[[${errormsg}]]*/ '';
+            if (errorMsg) {
+                alert(errorMsg);
+            }
+        }
+    </script>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+	<div class="container">
+		<div class="card">
+			<div th:switch="${courses}" class="container">
+				<div class>
+					<div class="button-container">
+						<a href="/teachers" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			            <a th:text="'Kursu saraksts priekš ' + ${name}" style="font-size: 2em;"></a>
+			            <a th:href="@{/remove-teacher/{id}(id=${teacher.id})}" class="btn btn-primary" 
+			                onclick="return confirmDeletion()"><i class="fas fa-user-times"> Dzēst </i></a>
+					</div>
+					<div class="line-separator"></div>
+			    </div>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nosaukums</th>
+								<th>Pirmais pasniedzējs</th>
+								<th>Otrais pasniedzējs</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="course : ${courses}">
+								<td th:text="${course.title}"></td>
+								<td th:text="${course.teacher1.name}"></td>
+								<td th:text="${course.teacher2!= null ? course.teacher2.name : ''}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

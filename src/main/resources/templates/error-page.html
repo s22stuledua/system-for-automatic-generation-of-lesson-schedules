@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kļūda</title>
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+</head>
+<body>
+    <div th:insert="~{fragments/header :: header}"></div>
+        <h3 style="text-align: center;">Ir problēma:</h3>
+        <h3 th:text="${errormsg}" style="text-align: center;"></h3>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

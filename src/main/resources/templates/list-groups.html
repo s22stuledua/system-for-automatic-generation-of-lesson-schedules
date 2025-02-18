@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Visas grupas</title>
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<script>
+		function confirmDeletion() {
+		    return confirm("Vai tiešām vēlaties dzēst?");
+		}
+	</script>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+	<div class="container" style="padding-left: 400px; padding-right: 400px;">
+		<div class="card">
+			<div class="card-body">
+				<div th:switch="${groups}" class="container">
+					<div class>
+						<div class="button-container">
+							<a href="/add-group" class="btn btn-primary"><i class="fa fa-plus"> Pievienot grupu </i></a>
+							<form th:action="@{/search-group}" class="form-inline">
+						        <input class="form-control" name= "keyword" id = "keyword" type="text" placeholder="Meklēt" aria-label="Meklēt" th:value="${keyword}">
+						        <button class="btn btn-primary" type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+					        </form>
+						</div>
+						<div class="line-separator"></div>
+				    </div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Nosaukums</th>
+									<th>Studentu skaits</th>
+									<th>Detaļas</th>
+									<th>Rediģēt</th>
+									<th>Dzēst</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="group : ${groups}">
+									<td th:text="${group.title}"></td>
+									<td th:text="${group.numberOfStudents}"></td>
+									<td><a th:href="@{/search-group/{id}(id=${group.id})}" class="btn btn-primary">
+										<i class="fa fa-info"></i></a></td>
+									<td><a th:href="@{/update-group/{id}(id=${group.id})}" class="btn btn-primary">
+										<i class="fas fa-pen-alt"></i></a></td>
+									<td><a th:href="@{/remove-group/{id}(id=${group.id})}" class="btn btn-primary" 
+										onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

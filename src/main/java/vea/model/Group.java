@@ -27,7 +27,7 @@ public class Group {
 	@Column(name = "title", nullable = false, unique = true, length = 50)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "number_of_students", nullable = false)
     private Integer numberOfStudents;
 
     @ManyToOne

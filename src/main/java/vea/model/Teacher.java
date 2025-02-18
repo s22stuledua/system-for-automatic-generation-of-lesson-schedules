@@ -31,4 +31,7 @@ public class Teacher {
 	@Enumerated(EnumType.STRING)
 	private Position position;
 	
+	@Column(name = "only_online")
+	private boolean onlyOnline;
+	
 }
