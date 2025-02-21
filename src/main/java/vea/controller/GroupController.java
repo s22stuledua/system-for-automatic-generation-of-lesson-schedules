@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import jakarta.validation.Valid;
 import vea.model.Group;
 import vea.service.CourseService;
 import vea.service.GroupService;
@@ -61,8 +62,9 @@ public class GroupController {
 	}
 
 	@PostMapping("/add-group")
-	public String createGroup(Group group, BindingResult result, Model model) {
+	public String createGroup(@Valid Group group, BindingResult result, Model model) {
 		if (result.hasErrors()) {
+			model.addAttribute("course", courseService.findAllCourses());
 			return "add-group";
 		}
 		groupService.createGroup(group);
@@ -97,7 +99,7 @@ public class GroupController {
 	}
 
 	@PostMapping("/update-group/{id}")
-	public String updateGroup(@PathVariable("id") Long id, Group group, BindingResult result, Model model) {
+	public String updateGroup(@PathVariable("id") Long id, @Valid Group group, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			group.setId(id);
 			return "update-group";

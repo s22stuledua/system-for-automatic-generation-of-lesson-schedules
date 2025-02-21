@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,9 +26,11 @@ public class Group {
     @Column(name = "idstudy_group")
 	private Long id;
 
+    @Size(min = 1, max = 50, message = "Šis lauks nedrīkst būt tukšs")
 	@Column(name = "title", nullable = false, unique = true, length = 50)
     private String title;
 
+    @NotNull(message = "Šis lauks nedrīkst būt tukšs")
     @Column(name = "number_of_students", nullable = false)
     private Integer numberOfStudents;
 

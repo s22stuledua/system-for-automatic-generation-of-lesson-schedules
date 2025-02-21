@@ -4,6 +4,7 @@
     <title>Rediģēt auditoriju</title>
     <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<style>.invalid-feedback {left: 918px;}</style>
 </head>
 <body>
 	<div th:insert="~{fragments/header :: header}"></div>
@@ -15,11 +16,15 @@
                 <form action="#" th:action="@{/update-classroom/{id}(id=${classroom.id})}" th:object="${classroom}" method="post">
                     <div class="form-group">
                         <label>Nosaukums</label> 
-                        <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"/>
+                        <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"
+						    th:classappend="${#fields.hasErrors('title')}? 'is-invalid' : ''"/>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
 					</div>
 					<div class="form-group">
                         <label>Sēdvietu skaits</label> 
-                        <input type="text" th:field="*{numberOfSeats}" class="form-control" id="numberOfSeats" placeholder="Sēdvietu skaits"/>
+                        <input type="text" th:field="*{numberOfSeats}" class="form-control" id="numberOfSeats" placeholder="Sēdvietu skaits"
+						    th:classappend="${#fields.hasErrors('numberOfSeats')}? 'is-invalid' : ''"/>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('numberOfSeats')}" th:errors="*{numberOfSeats}"></div>
                     </div>
                     <div class="form-group">
 						<label>Aprīkojums Nr.1</label>
@@ -61,7 +66,7 @@
 							</option>
 						</select>
 					</div>
-					<input type="submit" style="position: relative; right: -165px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -168px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

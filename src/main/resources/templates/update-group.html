@@ -4,11 +4,6 @@
     <title>Rediģēt grupu</title>
     <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
-	<style>
-        .form-control {
-            width: 200px;
-        }
-    </style>
 </head>
 <body>
 	<div th:insert="~{fragments/header :: header}"></div>
@@ -20,90 +15,94 @@
                 <form action="#" th:action="@{/update-group/{id}(id=${group.id})}" th:object="${group}" method="post">
 					<div class="form-group">
 						<label>Nosaukums</label> 
-						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"/>
+						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"
+						    th:classappend="${#fields.hasErrors('title')}? 'is-invalid' : ''"/>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
 					</div>
 					<div class="form-group">
 						<label>Studentu skaits</label> 
-						<input type="text" th:field="*{numberOfStudents}" class="form-control" id="numberOfStudents" placeholder="Studentu skaits"/>
+						<input type="text" th:field="*{numberOfStudents}" class="form-control" id="numberOfStudents" placeholder="Studentu skaits"
+						    th:classappend="${#fields.hasErrors('numberOfStudents')}? 'is-invalid' : ''"/>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('numberOfStudents')}" th:errors="*{numberOfStudents}"></div>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.1</label>
+						<label>Kurss Nr.1</label>
 						<select th:field ="*{course1}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.2</label>
+						<label>Kurss Nr.2</label>
 						<select th:field ="*{course2}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.3</label>
+						<label>Kurss Nr.3</label>
 						<select th:field ="*{course3}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.4</label>
+						<label>Kurss Nr.4</label>
 						<select th:field ="*{course4}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.5</label>
+						<label>Kurss Nr.5</label>
 						<select th:field ="*{course5}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.6</label>
+						<label>Kurss Nr.6</label>
 						<select th:field ="*{course6}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.7</label>
+						<label>Kurss Nr.7</label>
 						<select th:field ="*{course7}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.8</label>
+						<label>Kurss Nr.8</label>
 						<select th:field ="*{course8}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.9</label>
+						<label>Kurss Nr.9</label>
 						<select th:field ="*{course9}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.10</label>
+						<label>Kurss Nr.10</label>
 						<select th:field ="*{course10}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Kurs Nr.11</label>
+						<label>Kurss Nr.11</label>
 						<select th:field ="*{course11}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
-					<input type="submit" style="position: relative; right: -175px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -168px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

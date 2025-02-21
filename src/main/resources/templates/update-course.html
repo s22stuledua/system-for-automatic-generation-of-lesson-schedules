@@ -14,19 +14,24 @@
             <div class="card-body">
                 <form action="#" th:action="@{/update-course/{id}(id=${course.id})}" th:object="${course}" method="post">
                     <div class="form-group">
-						<label>Title</label> 
-						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Title"/>
+						<label>Nosaukums</label> 
+						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"
+						    th:classappend="${#fields.hasErrors('title')}? 'is-invalid' : ''"/>
+						<p th:if="${#fields.hasErrors('title')}" class="invalid-feedback"th:errors="*{title}"></p>
 					</div>
 					<div class="form-group">
 						<label>Nodarbību skaits</label> 
-						<input type="text" th:field="*{numberOfLessons}" class="form-control" id="number_of_lessons" placeholder="Nodarbību skaits"/>
+						<input type="text" th:field="*{numberOfLessons}" class="form-control" id="number_of_lessons" placeholder="Nodarbību skaits"
+						    th:classappend="${#fields.hasErrors('numberOfLessons')}? 'is-invalid' : ''"/>
+						<p th:if="${#fields.hasErrors('numberOfLessons')}" class="invalid-feedback"th:errors="*{numberOfLessons}"></p>
 					</div>
 					<div class="form-group">
 						<label>Pirmais pasniedzējs</label>
-						<select th:field ="*{teacher1}" class="form-control">
+						<select th:field ="*{teacher1}" class="form-control" th:classappend="${#fields.hasErrors('teacher1')}? 'is-invalid' : ''">
 							<option value="" selected>-- Atlasiet pasniedzēju --</option>
 							   <option th:each="teacher: ${teacher}" th:value="${teacher.id}" th:text = "${teacher.name}"></option>
 						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('teacher1')}" th:errors="*{teacher1}" style="left: 935px;"></div>
 					</div>
 					<div class="form-group">
 						<label>Otrais pasniedzējs</label>
@@ -115,7 +120,7 @@
 							</option>
 						</select>
 					</div>
-					<input type="submit" style="position: relative; right: -175px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -173px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

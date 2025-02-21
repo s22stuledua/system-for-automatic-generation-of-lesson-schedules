@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,12 +28,15 @@ public class Course {
     @Column(name = "idcourse")
     private Long id;
 
+    @Size(min = 1, max = 150, message = "Šis lauks nedrīkst būt tukšs")
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 
+    @NotNull(message = "Šis lauks nedrīkst būt tukšs")
     @Column(name = "number_of_lessons", nullable = false)
     private Integer numberOfLessons;
 
+    @NotNull(message = "Šis lauks nedrīkst būt tukšs")
     @ManyToOne
     @JoinColumn(name = "teacher1", nullable = false)
     private Teacher teacher1;

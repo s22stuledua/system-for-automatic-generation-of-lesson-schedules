@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
 import vea.model.Course;
 import vea.model.Teacher;
 import vea.service.CourseService;
@@ -80,7 +81,7 @@ public class TeacherController {
 	}
 
 	@PostMapping("/add-teacher")
-	public String createTeacher(Teacher teacher, BindingResult result, Model model) {
+	public String createTeacher(@Valid Teacher teacher, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			return "add-teacher";
 		}
@@ -102,7 +103,7 @@ public class TeacherController {
 	}
 
 	@PostMapping("/update-teacher/{id}")
-	public String updateTeacher(@PathVariable("id") Long id, Teacher teacher, BindingResult result, Model model) {
+	public String updateTeacher(@PathVariable("id") Long id, @Valid Teacher teacher, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			teacher.setId(id);
 			return "update-teacher";

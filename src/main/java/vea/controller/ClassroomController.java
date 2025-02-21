@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import jakarta.validation.Valid;
 import vea.model.Classroom;
 import vea.service.ClassroomService;
 
@@ -44,7 +45,7 @@ public class ClassroomController {
 	}
 
 	@PostMapping("/add-classroom")
-	public String createClassroom(Classroom classroom, BindingResult result, Model model) {
+	public String createClassroom(@Valid Classroom classroom, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			return "add-classroom";
 		}
@@ -66,7 +67,7 @@ public class ClassroomController {
 	}
 
 	@PostMapping("/update-classroom/{id}")
-	public String updateClassroom(@PathVariable("id") Long id, Classroom classroom, BindingResult result, Model model) {
+	public String updateClassroom(@PathVariable("id") Long id, @Valid Classroom classroom, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			classroom.setId(id);
 			return "update-classroom";

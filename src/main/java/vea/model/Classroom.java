@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,11 +26,13 @@ public class Classroom {
     @Column(name = "idclassroom")
     private Long id;
 
+    @Size(min = 1, max = 30, message = "Šis lauks nedrīkst būt tukšs")
     @Column(name = "title", nullable = false, unique = true, length = 30)
     private String title;
 
+    @NotNull(message = "Šis lauks nedrīkst būt tukšs")
     @Column(name = "number_of_seats", nullable = false)
-    private int numberOfSeats;
+    private Integer numberOfSeats;
 
     @Column(name = "equipment1")
 	@Enumerated(EnumType.STRING)
