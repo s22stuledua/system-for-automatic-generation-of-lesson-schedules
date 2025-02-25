@@ -20,11 +20,11 @@
 						<div class="button-container">
 							<a href="/groups" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
 							<a th:each="group : ${groups}">
-								<a th:text="'Kursu saraksts priekš ' + ${group.title}" style="font-size: 2em;"></a>
 								<a th:href="@{/edit-group/{id}(id=${group.id})}" class="btn btn-primary">
 									<i class="fas fa-user-edit ml-2"> Rediģēt </i></a>
 								<a th:href="@{/remove-group/{id}(id=${group.id})}" class="btn btn-primary" 
 								onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
+								<a th:text="'Kursu saraksts priekš ' + ${group.title}" style="font-size: 2em;"></a>
 							</a>
 						</div>
 						<div class="line-separator"></div>

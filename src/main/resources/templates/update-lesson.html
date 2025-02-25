@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rediģēt lekciju</title>
+    <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<style>.form-group label {flex: 1;}</style>
+	<script>
+		function confirmDeletion() {
+		    return confirm("Vai tiešām vēlaties dzēst?");
+		}
+	</script>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+    <div class="container">
+        <h3>Rediģēt lekciju</h3>
+        <div class="card">
+			<div class="button-container">
+				<a href="/schedules" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			    <a th:href="@{/remove-lesson/{id}(id=${lesson.id})}" class="btn btn-primary" onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
+			</div>
+            <div class="card-body">
+                <form action="#" th:action="@{/update-lesson/{id}(id=${lesson.id})}" th:object="${lesson}" method="post">
+					<div class="form-group">
+						<label>Grupa</label> 
+                        <select th:field ="*{group}" class="form-control" th:classappend="${#fields.hasErrors('group')}? 'is-invalid' : ''">
+							<option value="" selected>-- Atlasiet grupu --</option>
+							   <option th:each="group: ${group}" th:value="${group.id}" th:text="${group.title}"></option>
+						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('group')}" th:errors="*{group}"></div>
+					</div>
+					<div class="form-group">
+						<label>Datums</label>
+						<input type="date" th:field="*{date}" class="form-control" id="date" required/>
+					</div>
+					<div class="form-group">
+						<label>Laiks</label>
+						<input type="time" th:field="*{time}" class="form-control" id="time" required/>
+					</div>
+                    <div class="form-group">
+						<label>Kurss</label>
+						<select th:field ="*{course}" class="form-control" th:classappend="${#fields.hasErrors('course')}? 'is-invalid' : ''">
+							<option value="" selected>-- Atlasiet kursu --</option>
+							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('course')}" th:errors="*{course}"></div>
+					</div>
+                    <div class="form-group">
+						<label>Pasniedzējs</label>
+						<select th:field ="*{teacher}" class="form-control" th:classappend="${#fields.hasErrors('teacher')}? 'is-invalid' : ''">
+							<option value="" selected>-- Atlasiet pazniedzēju --</option>
+							   <option th:each="teacher: ${teacher}" th:value="${teacher.id}" th:text="${teacher.name}"></option>
+						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}"></div>
+					</div>
+                    <div class="form-group">
+						<label>Auditorija</label>
+						<select th:field ="*{classroom}" class="form-control" th:classappend="${#fields.hasErrors('classroom')}? 'is-invalid' : ''">
+							<option value="" selected>-- Atlasiet auditoriju --</option>
+							   <option th:each="classroom: ${classroom}" th:value="${classroom.id}" th:text="${classroom.title}"></option>
+						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('classroom')}" th:errors="*{classroom}"></div>
+					</div>
+					<input type="submit" style="position: relative; right: -154px;" class="btn btn-primary" value="Iesniegt">
+                </form>
+            </div>
+        </div>
+		<div class="content" style="padding: 31px;"></div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

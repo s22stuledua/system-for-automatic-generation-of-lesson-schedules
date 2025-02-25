@@ -55,7 +55,7 @@ public class ClassroomController {
 	}
 
 	@GetMapping("/update-classroom/{id}")
-	public String showUpdateForm(@PathVariable("id") Long id, Model model) throws Exception {
+	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
 			Classroom classroom = classroomService.findClassroomById(id);
 		    model.addAttribute("classroom", classroom);
@@ -67,7 +67,7 @@ public class ClassroomController {
 	}
 
 	@PostMapping("/update-classroom/{id}")
-	public String updateClassroom(@PathVariable("id") Long id, @Valid Classroom classroom, BindingResult result, Model model) {
+	public String updateClassroom(@PathVariable Long id, @Valid Classroom classroom, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			classroom.setId(id);
 			return "update-classroom";
@@ -78,7 +78,7 @@ public class ClassroomController {
 	}
 
 	@GetMapping("/remove-classroom/{id}")
-	public String deleteClassroom(@PathVariable("id") Long id, Model model) throws Exception {
+	public String deleteClassroom(@PathVariable Long id, Model model) throws Exception {
 		try {
 			classroomService.deleteClassroom(id);
 		    model.addAttribute("classroom", classroomService.findAllClassrooms());

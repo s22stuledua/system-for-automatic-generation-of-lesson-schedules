@@ -39,7 +39,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/search-group/{id}")
-	public String findGroupById(@PathVariable("id") Long id, Model model) throws Exception {
+	public String findGroupById(@PathVariable Long id, Model model) throws Exception {
 		try {
 			Group group = groupService.findGroupById(id);
 		    model.addAttribute("groups", group);
@@ -73,7 +73,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/update-group/{id}")
-	public String showUpdateForm(@PathVariable("id") Long id, Model model) throws Exception {
+	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
 			Group group = groupService.findGroupById(id);
 		    model.addAttribute("group", group);
@@ -86,7 +86,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/edit-group/{id}")
-	public String showEditForm(@PathVariable("id") Long id, Model model) throws Exception {
+	public String showEditForm(@PathVariable Long id, Model model) throws Exception {
 		try {
 			Group group = groupService.findGroupById(id);
 		    model.addAttribute("group", group);
@@ -99,9 +99,10 @@ public class GroupController {
 	}
 
 	@PostMapping("/update-group/{id}")
-	public String updateGroup(@PathVariable("id") Long id, @Valid Group group, BindingResult result, Model model) {
+	public String updateGroup(@PathVariable Long id, @Valid Group group, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			group.setId(id);
+			model.addAttribute("course", courseService.findAllCourses());
 			return "update-group";
 		}
 		groupService.updateGroup(group);
@@ -110,7 +111,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/remove-group/{id}")
-	public String deleteGroup(@PathVariable("id") Long id, Model model) throws Exception {
+	public String deleteGroup(@PathVariable Long id, Model model) throws Exception {
 		try {
 			groupService.deleteGroup(id);
 		    model.addAttribute("group", groupService.findAllGroups());

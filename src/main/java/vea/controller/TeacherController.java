@@ -91,7 +91,7 @@ public class TeacherController {
 	}
 
 	@GetMapping("/update-teacher/{id}")
-	public String showUpdateForm(@PathVariable("id") Long id, Model model) throws Exception {
+	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
 			Teacher teacher = teacherService.findTeacherById(id);
 		    model.addAttribute("teacher", teacher);
@@ -103,7 +103,7 @@ public class TeacherController {
 	}
 
 	@PostMapping("/update-teacher/{id}")
-	public String updateTeacher(@PathVariable("id") Long id, @Valid Teacher teacher, BindingResult result, Model model) {
+	public String updateTeacher(@PathVariable Long id, @Valid Teacher teacher, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			teacher.setId(id);
 			return "update-teacher";
@@ -114,7 +114,7 @@ public class TeacherController {
 	}
 
 	@GetMapping("/remove-teacher/{id}")
-	public String deleteTeacher(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) throws Exception {
+	public String deleteTeacher(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) throws Exception {
 		try {
 			teacherService.deleteTeacher(id);
 		    model.addAttribute("teacher", teacherService.findAllTeachers());

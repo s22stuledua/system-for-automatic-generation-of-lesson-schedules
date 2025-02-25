@@ -25,11 +25,11 @@
 					<div class="button-container">
 						<a href="/courses" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
 						<a th:each="course : ${courses}">
-							<a th:text="'Sīkāka informācija par ' + ${course.title}" style="font-size: 2em;"></a>
 							<a th:href="@{/edit-course/{id}(id=${course.id})}" class="btn btn-primary">
 								<i class="fas fa-user-edit ml-2"> Rediģēt </i></a>
 							<a th:href="@{/remove-course/{id}(id=${course.id})}" class="btn btn-primary" 
 							onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
+							<a th:text="'Sīkāka informācija par ' + ${course.title}" style="font-size: 2em;"></a>
 						</a>
 					</div>
 					<div class="line-separator"></div>

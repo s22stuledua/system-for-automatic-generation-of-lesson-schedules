@@ -31,7 +31,7 @@
 							<option value="" selected>-- Atlasiet pasniedzēju --</option>
 							   <option th:each="teacher: ${teacher}" th:value="${teacher.id}" th:text = "${teacher.name}"></option>
 						</select>
-						<div class="invalid-feedback" th:if="${#fields.hasErrors('teacher1')}" th:errors="*{teacher1}" style="left: 935px;"></div>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('teacher1')}" th:errors="*{teacher1}"></div>
 					</div>
 					<div class="form-group">
 						<label>Otrais pasniedzējs</label>
