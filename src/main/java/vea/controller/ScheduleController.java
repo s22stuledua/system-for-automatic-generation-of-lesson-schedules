@@ -1,7 +1,9 @@
 package vea.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,10 +53,10 @@ public class ScheduleController {
     }
 
     @PostMapping("/schedule")
-    public String generateSchedule(Model model) {
-        scheduleService.generateSchedule();
+    public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, Model model) {
+        scheduleService.generateSchedule(startDate);
 		List<Group> groups = groupService.findAllGroups();
-        List<Schedule> schedules = scheduleService.getSchedulesSortedByGroupAndTime();
+        List<Schedule> schedules = scheduleService.findAllSchedules();
 		model.addAttribute("groups", groups);
         model.addAttribute("schedules", schedules);
         return "list-schedules";
@@ -115,7 +117,7 @@ public class ScheduleController {
 			model.addAttribute("classroom", classroomService.findAllClassrooms());
 			return "update-lesson";
 		}
-		scheduleService.updateLesson(lesson);
+		scheduleService.createLesson(lesson);
 		model.addAttribute("lesson", scheduleService.findAllSchedules());
 		return "redirect:/schedules";
 	}

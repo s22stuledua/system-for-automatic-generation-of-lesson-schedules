@@ -72,7 +72,7 @@ public class ClassroomController {
 			classroom.setId(id);
 			return "update-classroom";
 		}
-		classroomService.updateClassroom(classroom);
+		classroomService.createClassroom(classroom);
 		model.addAttribute("classroom", classroomService.findAllClassrooms());
 		return "redirect:/classrooms";
 	}

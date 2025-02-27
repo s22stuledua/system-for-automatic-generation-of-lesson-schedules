@@ -37,11 +37,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 	}
 
 	@Override
-	public void updateClassroom(Classroom classroom) {
-		classroomRepo.save(classroom);
-	}
-
-	@Override
 	public void deleteClassroom(Long id) throws Exception {
 		Classroom classroom = classroomRepo.findById(id).orElseThrow(() -> new Exception("Auditorija ar šo ID nav atrasta"));
 		classroomRepo.deleteById(classroom.getId());

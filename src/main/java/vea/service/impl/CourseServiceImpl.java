@@ -58,11 +58,6 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public void updateCourse(Course course) {
-		courseRepo.save(course);
-	}
-
-	@Override
 	public void deleteCourse(Long id) throws Exception {
 		Course course = courseRepo.findById(id).orElseThrow(() -> new Exception("Kurss ar šo ID netika atrasts"));
 		courseRepo.deleteById(course.getId());

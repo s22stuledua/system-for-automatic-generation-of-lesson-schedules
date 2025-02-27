@@ -12,9 +12,11 @@
 		<div class="card">
 			<div class="card-body">
 				<div th:switch="${groups}" class="container">
-					<div class>
+					<div>
 						<div class="button-container">
 							<form th:action="@{/schedule}" method="post">
+									<label>Izvēlieties sākuma datumu:</label>
+									<input type="date" id="startDate" name="startDate" class="form-control" required>
 							    <button type="submit" class="btn btn-primary"> Ģenerēt grafiku </button>
 						    </form>
 							<form action="/schedules" method="get">

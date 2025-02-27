@@ -108,7 +108,7 @@ public class TeacherController {
 			teacher.setId(id);
 			return "update-teacher";
 		}
-		teacherService.updateTeacher(teacher);
+		teacherService.createTeacher(teacher);
 		model.addAttribute("teacher", teacherService.findAllTeachers());
 		return "redirect:/teachers";
 	}

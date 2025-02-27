@@ -15,8 +15,6 @@ public interface GroupService {
 
 	public void createGroup(Group group);
 
-	public void updateGroup(Group group);
-
 	public void deleteGroup(Long id) throws Exception;
 
 }

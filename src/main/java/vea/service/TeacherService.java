@@ -15,8 +15,6 @@ public interface TeacherService {
 
 	public void createTeacher(Teacher teacher);
 
-	public void updateTeacher(Teacher teacher);
-
 	public void deleteTeacher(Long id) throws Exception;
 
 }

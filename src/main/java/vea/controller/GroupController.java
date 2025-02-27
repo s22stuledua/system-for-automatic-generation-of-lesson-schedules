@@ -105,7 +105,7 @@ public class GroupController {
 			model.addAttribute("course", courseService.findAllCourses());
 			return "update-group";
 		}
-		groupService.updateGroup(group);
+		groupService.createGroup(group);
 		model.addAttribute("group", groupService.findAllGroups());
 		return "redirect:/groups";
 	}

@@ -47,11 +47,6 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public void updateTeacher(Teacher teacher) {
-		teacherRepo.save(teacher);
-	}
-
-	@Override
 	public void deleteTeacher(Long id) throws Exception {
 		Teacher teacher = teacherRepo.findById(id).orElseThrow(() -> new Exception("Pasniedzējs ar šo ID netika atrasts"));
 		teacherRepo.deleteById(teacher.getId());

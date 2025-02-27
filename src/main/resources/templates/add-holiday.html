@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pievienot brīvdienu</title>
+    <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<style>.invalid-feedback {left: 918px;} .form-group label {flex: 1;}</style>
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+    <div class="container">
+        <h3>Pievienot brīvdienu</h3>
+        <div class="card">
+			<a href="/holidays" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+            <div class="card-body">
+                <form action="#" th:action="@{/add-holiday}" th:object="${holiday}" method="post">
+                    <div class="form-group">
+                        <label>Nosaukums</label> 
+                        <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"
+						    th:classappend="${#fields.hasErrors('title')}? 'is-invalid' : ''"/>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                    </div>
+					<div class="form-group">
+						<label>Datums</label>
+						<input type="date" th:field="*{date}" class="form-control" id="date" required/>
+					</div>
+					<input type="submit" style="position: relative; right: -154px;" class="btn btn-primary" value="Iesniegt">
+                </form>
+            </div>
+        </div>
+		<div class="content" style="padding: 130px;"></div>
+    </div>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

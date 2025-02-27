@@ -48,11 +48,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public void updateGroup(Group group) {
-		groupRepo.save(group);
-	}
-
-	@Override
 	public void deleteGroup(Long id) throws Exception {
 		Group group = groupRepo.findById(id).orElseThrow(() -> new Exception("Grupa ar šo ID nav atrasta"));
 		groupRepo.deleteById(group.getId());

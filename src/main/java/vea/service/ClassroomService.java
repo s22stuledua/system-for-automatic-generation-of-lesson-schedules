@@ -13,8 +13,6 @@ public interface ClassroomService {
 
 	public void createClassroom(Classroom classroom);
 
-	public void updateClassroom(Classroom classroom);
-
 	public void deleteClassroom(Long id) throws Exception;
 
 }

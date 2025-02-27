@@ -139,7 +139,7 @@ public class CourseController {
 			model.addAttribute("teacher", teacherService.findAllTeachers());
 			return "update-course";
 		}
-		courseService.updateCourse(course);
+		courseService.createCourse(course);
 		model.addAttribute("course", courseService.findAllCourses());
 		return "redirect:/courses";
 	}
