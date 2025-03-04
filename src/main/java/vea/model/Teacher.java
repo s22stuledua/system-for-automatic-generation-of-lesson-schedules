@@ -37,5 +37,9 @@ public class Teacher {
 	
 	@Column(name = "only_online")
 	private boolean onlyOnline;
+
+	public boolean canOnlyTeachOnline() {
+        return onlyOnline;
+    }
 	
 }

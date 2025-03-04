@@ -10,7 +10,9 @@ public interface ScheduleService {
 
     public Schedule findLessonById(Long id) throws Exception;
 
-    public List<Schedule> getSchedulesByGroupTitle(String groupTitle);
+    public List<Schedule> getSchedulesSortedByGroupAndDateAndTime();
+
+    public List<Schedule> getSchedulesSortedByGroupAndDateAndTime(String groupTitle);
     
     public void generateSchedule(LocalDate startDate);
     

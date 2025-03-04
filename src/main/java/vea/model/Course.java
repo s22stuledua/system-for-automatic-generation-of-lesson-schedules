@@ -36,45 +36,53 @@ public class Course {
     @Column(name = "number_of_lessons", nullable = false)
     private Integer numberOfLessons;
 
+    public int getTotalLessons() {
+        return numberOfLessons;
+    }
+
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
     @ManyToOne
     @JoinColumn(name = "teacher1", nullable = false)
-    private Teacher teacher1;
+    public Teacher teacher1;
 
     @ManyToOne
     @JoinColumn(name = "teacher2")
-    private Teacher teacher2;
+    public Teacher teacher2;
+
+    public boolean hasTwoTeachers() {
+        return teacher2 != null;
+    }
 
     @Column(name = "equipment1")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment1;
+	public Equipment equipment1;
 
     @Column(name = "equipment2")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment2;
+	public Equipment equipment2;
 
     @Column(name = "equipment3")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment3;
+	public Equipment equipment3;
 
     @Column(name = "equipment4")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment4;
+	public Equipment equipment4;
 
     @Column(name = "equipment5")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment5;
+	public Equipment equipment5;
 
     @Column(name = "equipment6")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment6;
+	public Equipment equipment6;
 
     @Column(name = "equipment7")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment7;
+	public Equipment equipment7;
 
     @Column(name = "equipment8")
 	@Enumerated(EnumType.STRING)
-	private Equipment equipment8;
+	public Equipment equipment8;
 
 }

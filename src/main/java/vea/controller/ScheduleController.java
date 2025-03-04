@@ -44,9 +44,9 @@ public class ScheduleController {
         List<Schedule> schedules;
 		model.addAttribute("groups", groups);
         if (groupTitle != null && !groupTitle.isEmpty()) {
-            schedules = scheduleService.getSchedulesByGroupTitle(groupTitle);
+            schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(groupTitle);
         } else {
-            schedules = scheduleService.findAllSchedules();
+            schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(); 
         }
 		model.addAttribute("schedules", schedules);
         return "list-schedules";
@@ -56,7 +56,7 @@ public class ScheduleController {
     public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, Model model) {
         scheduleService.generateSchedule(startDate);
 		List<Group> groups = groupService.findAllGroups();
-        List<Schedule> schedules = scheduleService.findAllSchedules();
+        List<Schedule> schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime();
 		model.addAttribute("groups", groups);
         model.addAttribute("schedules", schedules);
         return "list-schedules";
