@@ -78,4 +78,7 @@ public class Group {
     @JoinColumn(name = "course11")
     private Course course11;
 
+    @Column(name = "active")
+	private boolean active;
+
 }

@@ -1,6 +1,5 @@
 package vea.controller;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +19,7 @@ public class HolidayController {
 
     @GetMapping("/holidays")
 	public String findAllHolidays(Model model) {
-		List<Holiday> holidays = holidayService.findAllHolidays();
-		model.addAttribute("holidays", holidays);
+		model.addAttribute("holidays", holidayService.findAllHolidays());
 		return "list-holidays";
 	}
 
@@ -48,8 +46,7 @@ public class HolidayController {
 	@GetMapping("/update-holiday/{id}")
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Holiday holiday = holidayService.findHolidayById(id);
-		    model.addAttribute("holiday", holiday);
+		    model.addAttribute("holiday", holidayService.findHolidayById(id));
 		    return "update-holiday";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());

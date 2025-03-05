@@ -1,6 +1,5 @@
 package vea.controller;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -25,15 +24,13 @@ public class GroupController {
 
 	@GetMapping("/groups")
 	public String findAllGroups(Model model) {
-		List<Group> groups = groupService.findAllGroups();
-		model.addAttribute("groups", groups);
+		model.addAttribute("groups", groupService.findAllGroups());
 		return "list-groups";
 	}
 
 	@GetMapping("/search-group")
 	public String searchGroup(@Param("keyword") String keyword, Model model) {
-		List<Group> group = groupService.searchGroupByTitle(keyword);
-		model.addAttribute("groups", group);
+		model.addAttribute("groups", groupService.searchGroupByTitle(keyword));
 		model.addAttribute("keyword", keyword);
 		return "list-groups";
 	}
@@ -41,8 +38,7 @@ public class GroupController {
 	@GetMapping("/search-group/{id}")
 	public String findGroupById(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Group group = groupService.findGroupById(id);
-		    model.addAttribute("groups", group);
+		    model.addAttribute("groups", groupService.findGroupById(id));
 		    return "list-group";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -75,8 +71,7 @@ public class GroupController {
 	@GetMapping("/update-group/{id}")
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Group group = groupService.findGroupById(id);
-		    model.addAttribute("group", group);
+		    model.addAttribute("group", groupService.findGroupById(id));
 			model.addAttribute("course", courseService.findAllCourses());
 		    return "update-group";
 		} catch (Exception e) {
@@ -88,8 +83,7 @@ public class GroupController {
 	@GetMapping("/edit-group/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Group group = groupService.findGroupById(id);
-		    model.addAttribute("group", group);
+		    model.addAttribute("group", groupService.findGroupById(id));
 			model.addAttribute("course", courseService.findAllCourses());
 		    return "edit-group";
 		} catch (Exception e) {

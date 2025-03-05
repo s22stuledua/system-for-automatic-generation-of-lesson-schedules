@@ -34,15 +34,13 @@ public class CourseController {
 
 	@GetMapping("/courses")
 	public String findAllCourses(Model model) {
-		List<Course> courses = courseService.findAllCourses();
-		model.addAttribute("courses", courses);
+		model.addAttribute("courses", courseService.findAllCourses());
 		return "list-courses";
 	}
 
 	@GetMapping("/search-course")
 	public String searchCourse(@Param("keyword") String keyword, Model model) {
-		List<Course> course = courseService.searchCourseByTitle(keyword);
-		model.addAttribute("courses", course);
+		model.addAttribute("courses", courseService.searchCourseByTitle(keyword));
 		model.addAttribute("keyword", keyword);
 		return "list-courses";
 	}
@@ -50,8 +48,7 @@ public class CourseController {
 	@GetMapping("/search-course/{id}")
 	public String findCoursepById(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Course course = courseService.findCourseById(id);
-		    model.addAttribute("courses", course);
+		    model.addAttribute("courses", courseService.findCourseById(id));
 		    return "list-course";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -61,8 +58,7 @@ public class CourseController {
 
 	@GetMapping("/courses/sorted")
     public String getSortedCourses(Model model) {
-		List<Course> course = courseService.getSortedCourses(isSorted);
-        model.addAttribute("courses", course);
+        model.addAttribute("courses", courseService.getSortedCourses(isSorted));
         return "list-courses";
     }
 
@@ -75,8 +71,7 @@ public class CourseController {
 	@GetMapping("/course/{id}")
 	public String findCourseById(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Course course = courseService.findCourseById(id);
-		    model.addAttribute("course", course);
+		    model.addAttribute("course", courseService.findCourseById(id));
 		    return "list-course";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -109,8 +104,7 @@ public class CourseController {
 	@GetMapping("/update-course/{id}")
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Course course = courseService.findCourseById(id);
-		    model.addAttribute("course", course);
+		    model.addAttribute("course", courseService.findCourseById(id));
 			model.addAttribute("teacher", teacherService.findAllTeachers());
 		    return "update-course";
 		} catch (Exception e) {
@@ -122,8 +116,7 @@ public class CourseController {
 	@GetMapping("/edit-course/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Course course = courseService.findCourseById(id);
-		    model.addAttribute("course", course);
+		    model.addAttribute("course", courseService.findCourseById(id));
 			model.addAttribute("teacher", teacherService.findAllTeachers());
 		    return "edit-course";
 		} catch (Exception e) {

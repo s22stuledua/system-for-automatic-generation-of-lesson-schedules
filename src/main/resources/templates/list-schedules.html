@@ -19,6 +19,10 @@
 									<input type="date" id="startDate" name="startDate" class="form-control" required>
 							    <button type="submit" class="btn btn-primary"> Ģenerēt grafiku </button>
 						    </form>
+							<a href="/add-lesson" class="btn btn-primary"><i class="fa fa-plus"> Pievienot lekciju </i></a>
+						</div>
+						<div class="content" style="padding: 5px;"></div>
+						<div class="button-container">
 							<form action="/schedules" method="get">
 								<label>Atlasiet grupu:</label>
 								<select name="groupTitle" id="groupTitle" class="form-control">
@@ -27,8 +31,22 @@
 								</select>
 								<button type="submit" class="btn btn-primary"> Filtrēt </button>
 							</form>
-							<a th:text="'Nodarbību grafiks'" style="font-size: 2em;"></a>
-							<a href="/add-lesson" class="btn btn-primary"><i class="fa fa-plus"> Pievienot lekciju </i></a>
+							<form action="/schedules" method="get">
+								<label>Atlasiet auditoriju:</label>
+								<select name="classroomTitle" id="classroomTitle" class="form-control">
+									<option value="">--Atlasiet auditoriju--</option>
+									<option th:each="classroom : ${classrooms}" th:value="${classroom.title}" th:text="${classroom.title}"></option>
+								</select>
+								<button type="submit" class="btn btn-primary"> Filtrēt </button>
+							</form>
+							<form action="/schedules" method="get">
+								<label>Atlasiet pasniedzēju:</label>
+								<select name="teacherName" id="teacherName" class="form-control">
+									<option value="">--Atlasiet pasniedzēju--</option>
+									<option th:each="teacher : ${teachers}" th:value="${teacher.name}" th:text="${teacher.name}"></option>
+								</select>
+								<button type="submit" class="btn btn-primary"> Filtrēt </button>
+							</form>
 						</div>
 						<div class="line-separator"></div>
 				    </div>

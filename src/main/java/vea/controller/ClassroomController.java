@@ -1,6 +1,5 @@
 package vea.controller;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -21,15 +20,13 @@ public class ClassroomController {
 
 	@GetMapping("/classrooms")
 	public String findAllClassrooms(Model model) {
-		List<Classroom> classrooms = classroomService.findAllClassrooms();
-		model.addAttribute("classrooms", classrooms);
+		model.addAttribute("classrooms", classroomService.findAllClassrooms());
 		return "list-classrooms";
 	}
 
 	@GetMapping("/search-classroom")
 	public String searchClassroom(@Param("keyword") String keyword, Model model) {
-		List<Classroom> classroom = classroomService.searchClassroomByTitle(keyword);
-		model.addAttribute("classrooms", classroom);
+		model.addAttribute("classrooms", classroomService.searchClassroomByTitle(keyword));
 		model.addAttribute("keyword", keyword);
 		return "list-classrooms";
 	}
@@ -57,8 +54,7 @@ public class ClassroomController {
 	@GetMapping("/update-classroom/{id}")
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Classroom classroom = classroomService.findClassroomById(id);
-		    model.addAttribute("classroom", classroom);
+		    model.addAttribute("classroom", classroomService.findClassroomById(id));
 		    return "update-classroom";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());

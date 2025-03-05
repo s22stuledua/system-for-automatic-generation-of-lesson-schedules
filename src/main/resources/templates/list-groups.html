@@ -13,7 +13,7 @@
 </head>
 <body>
 	<div th:insert="~{fragments/header :: header}"></div>
-	<div class="container" style="padding-left: 400px; padding-right: 400px;">
+	<div class="container" style="padding-left: 350px; padding-right: 350px;">
 		<div class="card">
 			<div class="card-body">
 				<div th:switch="${groups}" class="container">
@@ -34,6 +34,7 @@
 								<tr>
 									<th>Nosaukums</th>
 									<th>Studentu skaits</th>
+									<th>Tiks izmantota grafika izveidei</th>
 									<th>Detaļas</th>
 									<th>Rediģēt</th>
 									<th>Dzēst</th>
@@ -43,6 +44,7 @@
 								<tr th:each="group : ${groups}">
 									<td th:text="${group.title}"></td>
 									<td th:text="${group.numberOfStudents}"></td>
+									<td th:text="${group.active ? '✓' : '✕'}"></td>
 									<td><a th:href="@{/search-group/{id}(id=${group.id})}" class="btn btn-primary">
 										<i class="fa fa-info"></i></a></td>
 									<td><a th:href="@{/update-group/{id}(id=${group.id})}" class="btn btn-primary">

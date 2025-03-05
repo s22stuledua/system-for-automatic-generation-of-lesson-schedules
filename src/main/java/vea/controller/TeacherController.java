@@ -30,8 +30,7 @@ public class TeacherController {
 
 	@GetMapping("/teachers")
 	public String findAllTeachers(Model model) {
-		List<Teacher> teachers = teacherService.findAllTeachers();
-		model.addAttribute("teachers", teachers);
+		model.addAttribute("teachers", teacherService.findAllTeachers());
 		return "list-teachers";
 	}
 
@@ -51,16 +50,14 @@ public class TeacherController {
 
 	@GetMapping("/search-teacher")
 	public String searchTeachers(@Param("keyword") String keyword, Model model) {
-		List<Teacher> teacher = teacherService.searchTeacherByName(keyword);
-		model.addAttribute("teachers", teacher);
+		model.addAttribute("teachers", teacherService.searchTeacherByName(keyword));
 		model.addAttribute("keyword", keyword);
 		return "list-teachers";
 	}
 
 	@GetMapping("/teachers/sorted")
     public String getSortedTeachers(Model model) {
-		List<Teacher> teacher = teacherService.getSortedTeachers(isSorted);
-        model.addAttribute("teachers", teacher);
+        model.addAttribute("teachers", teacherService.getSortedTeachers(isSorted));
         return "list-teachers";
     }
 
@@ -93,8 +90,7 @@ public class TeacherController {
 	@GetMapping("/update-teacher/{id}")
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
-			Teacher teacher = teacherService.findTeacherById(id);
-		    model.addAttribute("teacher", teacher);
+		    model.addAttribute("teacher", teacherService.findTeacherById(id));
 		    return "update-teacher";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());

@@ -102,6 +102,10 @@
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 					</div>
+					<div class="form-group">
+						<label>Tiks izmantota grafika izveidei</label> 
+                        <input type="checkbox" th:field="*{active}"/>
+					</div>
 					<input type="submit" style="position: relative; right: -168px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>

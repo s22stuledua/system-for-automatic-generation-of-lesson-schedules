@@ -69,6 +69,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<Schedule> getSchedulesSortedByClassroomAndDateAndTime(String classroomTitle) {
+        return scheduleRepo.findAllOrderByClassroomAndDateAndTime(classroomTitle);
+    }
+
+    @Override
+    public List<Schedule> getSchedulesSortedByTeacherAndDateAndTime(String teacherName) {
+        return scheduleRepo.findAllOrderByTeacherAndDateAndTime(teacherName);
+    }
+
+    @Override
 	public void createLesson(Schedule lesson) {
 		scheduleRepo.save(lesson);
 	}
@@ -96,9 +106,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDate endDate = startDate.plusWeeks(16);
 
         for (Group group : groups) {
-            List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
-            newGroupSchedules.put(group, schedule);
-            scheduleRepo.saveAll(schedule);
+            if (group.isActive()) {
+                List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
+                newGroupSchedules.put(group, schedule);
+                scheduleRepo.saveAll(schedule);
+            }
         }
     }
 
@@ -157,23 +169,29 @@ public class ScheduleServiceImpl implements ScheduleService {
     
                         if (currentLessonsPerDate < 5) {
                             Teacher teacher = getAssignedTeacher(course, currentLessonsPerDate);
-                            Classroom classroom = findAvailableClassroom(teacher, group, course, classrooms, currentDate, lessonStartTime);
     
-                            if (classroom != null) {
-                                Schedule lesson = new Schedule(group, course, teacher, classroom, currentDate, lessonStartTime);
-                                scheduledLessons.add(lesson);
+                            LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
+                            if (isTeacherAvailable(teacher, lessonDateTime, teacherAvailability)) {
+                                Classroom classroom = findAvailableClassroom(teacher, group, course, classrooms, currentDate, lessonStartTime);
     
-                                lessonsPerDate.merge(currentDate, 1, Integer::sum);
-                                lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
-                                currentCourseWeeklyCountMap.merge(course, 1, Integer::sum);
-                                courseLessonsScheduled++;
+                                if (classroom != null) {
+                                    Schedule lesson = new Schedule(group, course, teacher, classroom, currentDate, lessonStartTime);
+                                    scheduledLessons.add(lesson);
     
-                                scheduledTimes.add(lessonStartTime);
+                                    updateTeacherAvailability(teacher, lessonDateTime, teacherAvailability);
     
-                                if (courseLessonsScheduled >= course.getNumberOfLessons() ||
-                                    lessonsPerDate.get(currentDate) >= 5 || lessonsPerWeek.get(weekNumber) >= 15 ||
-                                    currentCourseWeeklyCountMap.get(course) >= courseLimitPerWeek) {
-                                    break;
+                                    lessonsPerDate.merge(currentDate, 1, Integer::sum);
+                                    lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
+                                    currentCourseWeeklyCountMap.merge(course, 1, Integer::sum);
+                                    courseLessonsScheduled++;
+    
+                                    scheduledTimes.add(lessonStartTime);
+    
+                                    if (courseLessonsScheduled >= course.getNumberOfLessons() ||
+                                        lessonsPerDate.get(currentDate) >= 5 || lessonsPerWeek.get(weekNumber) >= 15 ||
+                                        currentCourseWeeklyCountMap.get(course) >= courseLimitPerWeek) {
+                                        break;
+                                    }
                                 }
                             }
                         } else {
@@ -220,6 +238,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         } else {
             return course.getTeacher1();
         }
+    }
+
+    private boolean isTeacherAvailable(Teacher teacher, LocalDateTime lessonDateTime, 
+                                   Map<Teacher, LocalDateTime> teacherAvailability) {
+        LocalDateTime currentAvailability = teacherAvailability.get(teacher);
+        return currentAvailability == null || lessonDateTime.isAfter(currentAvailability.plusMinutes(100));
+    }
+    
+    private void updateTeacherAvailability(Teacher teacher, LocalDateTime lessonDateTime, 
+                                           Map<Teacher, LocalDateTime> teacherAvailability) {
+        teacherAvailability.put(teacher, lessonDateTime);
     }
     
     private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, List<Classroom> classrooms, LocalDate date, LocalTime time) {

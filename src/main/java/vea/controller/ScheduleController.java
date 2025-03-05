@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
-import vea.model.Group;
 import vea.model.Schedule;
 import vea.service.ClassroomService;
 import vea.service.CourseService;
@@ -39,12 +38,17 @@ public class ScheduleController {
 	private ClassroomService classroomService;
 
 	@GetMapping("/schedules")
-    public String getSortedSchedules(@RequestParam(required = false) String groupTitle, Model model) {
-		List<Group> groups = groupService.findAllGroups();
+    public String getSortedSchedules(@RequestParam(required = false) String groupTitle, @RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, Model model) {
         List<Schedule> schedules;
-		model.addAttribute("groups", groups);
+		model.addAttribute("groups", groupService.findAllGroups());
+		model.addAttribute("classrooms", classroomService.findAllClassrooms());
+		model.addAttribute("teachers", teacherService.findAllTeachers());
         if (groupTitle != null && !groupTitle.isEmpty()) {
             schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(groupTitle);
+		} else if (classroomTitle != null && !classroomTitle.isEmpty()) {
+            schedules = scheduleService.getSchedulesSortedByClassroomAndDateAndTime(classroomTitle);
+		} else if (teacherName != null && !teacherName.isEmpty()) {
+            schedules = scheduleService.getSchedulesSortedByTeacherAndDateAndTime(teacherName);
         } else {
             schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(); 
         }
@@ -55,10 +59,10 @@ public class ScheduleController {
     @PostMapping("/schedule")
     public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, Model model) {
         scheduleService.generateSchedule(startDate);
-		List<Group> groups = groupService.findAllGroups();
-        List<Schedule> schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime();
-		model.addAttribute("groups", groups);
-        model.addAttribute("schedules", schedules);
+		model.addAttribute("groups", groupService.findAllGroups());
+		model.addAttribute("classrooms", classroomService.findAllClassrooms());
+		model.addAttribute("teachers", teacherService.findAllTeachers());
+        model.addAttribute("schedules", scheduleService.getSchedulesSortedByGroupAndDateAndTime());
         return "list-schedules";
     }
 

@@ -13,6 +13,10 @@ public interface ScheduleService {
     public List<Schedule> getSchedulesSortedByGroupAndDateAndTime();
 
     public List<Schedule> getSchedulesSortedByGroupAndDateAndTime(String groupTitle);
+
+    public List<Schedule> getSchedulesSortedByClassroomAndDateAndTime(String classroomTitle);
+
+    public List<Schedule> getSchedulesSortedByTeacherAndDateAndTime(String teacherName);
     
     public void generateSchedule(LocalDate startDate);
     
