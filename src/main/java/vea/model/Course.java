@@ -36,10 +36,6 @@ public class Course {
     @Column(name = "number_of_lessons", nullable = false)
     private Integer numberOfLessons;
 
-    public int getTotalLessons() {
-        return numberOfLessons;
-    }
-
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
     @ManyToOne
     @JoinColumn(name = "teacher1", nullable = false)

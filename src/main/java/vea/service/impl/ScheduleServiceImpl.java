@@ -106,7 +106,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDate endDate = startDate.plusWeeks(16);
 
         for (Group group : groups) {
-            if (group.isActive()) {
+            if (group.getLastSemester() && group.getActive()) {
+                List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
+                newGroupSchedules.put(group, schedule);
+                scheduleRepo.saveAll(schedule);
+            }
+        }
+
+        for (Group group : groups) {
+            if (!group.getLastSemester() && group.getActive()) {
                 List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
                 newGroupSchedules.put(group, schedule);
                 scheduleRepo.saveAll(schedule);
@@ -222,7 +230,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private int getCourseLimitPerWeek(Course course) {
-        int totalLessons = course.getTotalLessons();
+        int totalLessons = course.getNumberOfLessons();
         if (totalLessons < 16) {
             return 2;
         } else if (totalLessons == 16) {
@@ -257,11 +265,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                 continue;
             }
     
-            if (teacher.canOnlyTeachOnline() && "Attālināti / Online".equals(classroom.getTitle())) {
+            if (teacher.getOnlyOnline() && "Attālināti / Online".equals(classroom.getTitle())) {
                 return classroom;
             }
             
-            if (!teacher.canOnlyTeachOnline() && isClassroomAvailable(classroom, teacher, course, date, time)) {
+            if (!teacher.getOnlyOnline() && isClassroomAvailable(classroom, teacher, course, date, time)) {
                 if (course.hasTwoTeachers()) {
                     if (teacher.equals(course.getTeacher1())) {
                         if (matchesEquipment(classroom, course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4())) {

@@ -78,7 +78,10 @@ public class Group {
     @JoinColumn(name = "course11")
     private Course course11;
 
+    @Column(name = "last_semester")
+	private Boolean lastSemester;
+
     @Column(name = "active")
-	private boolean active;
+	private Boolean active;
 
 }

@@ -36,10 +36,6 @@ public class Teacher {
 	private Position position;
 	
 	@Column(name = "only_online")
-	private boolean onlyOnline;
-
-	public boolean canOnlyTeachOnline() {
-        return onlyOnline;
-    }
+	private Boolean onlyOnline;
 	
 }

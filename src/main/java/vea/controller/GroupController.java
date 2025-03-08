@@ -1,5 +1,7 @@
 package vea.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;	
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 import vea.model.Group;
 import vea.service.CourseService;
@@ -45,6 +48,21 @@ public class GroupController {
 			return "error-page";
 		}
 	}
+
+	@GetMapping("/groups/sorted")
+    public String showGroups(Model model, @RequestParam(defaultValue = "false") boolean filterLastSemester, @RequestParam(defaultValue = "false") boolean filterActive) {
+        List<Group> groups = groupService.findAllGroups();
+        if (filterLastSemester) {
+            groups = groups.stream().filter(Group::getLastSemester).collect(Collectors.toList());
+        }
+        if (filterActive) {
+            groups = groups.stream().filter(Group::getActive).collect(Collectors.toList());
+        }
+        model.addAttribute("groups", groups);
+		model.addAttribute("filterLastSemester", filterLastSemester);
+        model.addAttribute("filterActive", filterActive);
+        return "list-groups";
+    }
 
 	@GetMapping("/add-group")
 	public String showCreateForm(Group group, Model model) {
