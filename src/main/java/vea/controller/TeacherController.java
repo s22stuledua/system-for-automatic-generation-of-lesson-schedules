@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.validation.Valid;
 import vea.model.Course;
 import vea.model.Teacher;
+import vea.service.ClassroomService;
 import vea.service.CourseService;
 import vea.service.TeacherService;
 
@@ -25,6 +26,9 @@ public class TeacherController {
 
 	@Autowired
     private CourseService courseService;
+
+	@Autowired
+    private ClassroomService classroomService;
 
 	private boolean isSorted = false;
 
@@ -70,6 +74,7 @@ public class TeacherController {
 	@GetMapping("/add-teacher")
 	public String showCreateForm(Teacher teacher, Model model) {
 		try {
+			model.addAttribute("classroom", classroomService.findAllClassrooms());
 			return "add-teacher";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -80,6 +85,7 @@ public class TeacherController {
 	@PostMapping("/add-teacher")
 	public String createTeacher(@Valid Teacher teacher, BindingResult result, Model model) {
 		if (result.hasErrors()) {
+			model.addAttribute("classroom", classroomService.findAllClassrooms());
 			return "add-teacher";
 		}
 		teacherService.createTeacher(teacher);
@@ -91,6 +97,7 @@ public class TeacherController {
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
 		    model.addAttribute("teacher", teacherService.findTeacherById(id));
+			model.addAttribute("classroom", classroomService.findAllClassrooms());
 		    return "update-teacher";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -102,6 +109,7 @@ public class TeacherController {
 	public String updateTeacher(@PathVariable Long id, @Valid Teacher teacher, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			teacher.setId(id);
+			model.addAttribute("classroom", classroomService.findAllClassrooms());
 			return "update-teacher";
 		}
 		teacherService.createTeacher(teacher);

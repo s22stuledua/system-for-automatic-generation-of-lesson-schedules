@@ -36,11 +36,46 @@
 						<label>Var mācīt tikai tiešsaistē</label> 
                         <input type="checkbox" th:field="*{onlyOnline}"/>
 					</div>
+                    <div class="form-group">
+						<label>Auditorija Nr.1</label>
+						<select th:field ="*{classroom1}" class="form-control">
+							<option value="" selected>-- Atlasiet auditoriju --</option>
+							   <option th:each="classroom: ${classroom}" th:value="${classroom.id}" th:text="${classroom.title}"></option>
+						</select>
+					</div>
+                    <div class="form-group">
+						<label>Auditorija Nr.2</label>
+						<select th:field ="*{classroom2}" class="form-control">
+							<option value="" selected>-- Atlasiet auditoriju --</option>
+							   <option th:each="classroom: ${classroom}" th:value="${classroom.id}" th:text="${classroom.title}"></option>
+						</select>
+					</div>
+                    <div class="form-group">
+						<label>Auditorija Nr.3</label>
+						<select th:field ="*{classroom3}" class="form-control">
+							<option value="" selected>-- Atlasiet auditoriju --</option>
+							   <option th:each="classroom: ${classroom}" th:value="${classroom.id}" th:text="${classroom.title}"></option>
+						</select>
+					</div>
+                    <div class="form-group">
+						<label>Auditorija Nr.4</label>
+						<select th:field ="*{classroom4}" class="form-control">
+							<option value="" selected>-- Atlasiet auditoriju --</option>
+							   <option th:each="classroom: ${classroom}" th:value="${classroom.id}" th:text="${classroom.title}"></option>
+						</select>
+					</div>
+                    <div class="form-group">
+						<label>Auditorija Nr.5</label>
+						<select th:field ="*{classroom5}" class="form-control">
+							<option value="" selected>-- Atlasiet auditoriju --</option>
+							   <option th:each="classroom: ${classroom}" th:value="${classroom.id}" th:text="${classroom.title}"></option>
+						</select>
+					</div>
 					<input type="submit" style="position: relative; right: -198px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>
-		<div class="content" style="padding: 98px;"></div>
+		<div class="content" style="padding: 34px;"></div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>
 </body>

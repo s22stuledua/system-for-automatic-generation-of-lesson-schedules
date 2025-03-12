@@ -30,23 +30,46 @@
 					</div>
 					<div class="line-separator"></div>
 			    </div>
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>Nosaukums</th>
-								<th>Pirmais pasniedzējs</th>
-								<th>Otrais pasniedzējs</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="course : ${courses}">
-								<td th:text="${course.title}"></td>
-								<td th:text="${course.teacher1.name}"></td>
-								<td th:text="${course.teacher2!= null ? course.teacher2.name : ''}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Nosaukums</th>
+							<th>Pirmais pasniedzējs</th>
+							<th>Otrais pasniedzējs</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="course : ${courses}">
+							<td th:text="${course.title}"></td>
+							<td th:text="${course.teacher1.name}"></td>
+							<td th:text="${course.teacher2!= null ? course.teacher2.name : ''}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>	
+			<div th:switch="${teachers}" class="container">	
+				<a th:text="'Nepiemērotu auditoriju saraksts priekš ' + ${name}" style="font-size: 2em; position: relative; right: -360px;"></a>
+				<div class="line-separator"></div>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Auditorija Nr.1</th>
+							<th>Auditorija Nr.2</th>
+							<th>Auditorija Nr.3</th>
+							<th>Auditorija Nr.4</th>
+							<th>Auditorija Nr.5</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="teacher : ${teacher}">
+							<td th:text="${teacher.classroom1!= null ? teacher.classroom1.title : ''}"></td>
+							<td th:text="${teacher.classroom2!= null ? teacher.classroom2.title : ''}"></td>
+							<td th:text="${teacher.classroom3!= null ? teacher.classroom3.title : ''}"></td>
+							<td th:text="${teacher.classroom4!= null ? teacher.classroom4.title : ''}"></td>
+							<td th:text="${teacher.classroom5!= null ? teacher.classroom5.title : ''}"></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

@@ -175,9 +175,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     
                         int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
     
-                        if (currentLessonsPerDate < 5) {
+                        if (currentLessonsPerDate < 4) {
                             Teacher teacher = getAssignedTeacher(course, currentLessonsPerDate);
-    
                             LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
                             if (isTeacherAvailable(teacher, lessonDateTime, teacherAvailability)) {
                                 Classroom classroom = findAvailableClassroom(teacher, group, course, classrooms, currentDate, lessonStartTime);
@@ -261,14 +260,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     
     private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, List<Classroom> classrooms, LocalDate date, LocalTime time) {
         for (Classroom classroom : classrooms) {
+            if (teacher.getUnteachableClassrooms().contains(classroom)) {
+                continue;
+            }
             if (classroom.getNumberOfSeats() < group.getNumberOfStudents()) {
                 continue;
             }
-    
             if (teacher.getOnlyOnline() && "Attālināti / Online".equals(classroom.getTitle())) {
                 return classroom;
             }
-            
             if (!teacher.getOnlyOnline() && isClassroomAvailable(classroom, teacher, course, date, time)) {
                 if (course.hasTwoTeachers()) {
                     if (teacher.equals(course.getTeacher1())) {

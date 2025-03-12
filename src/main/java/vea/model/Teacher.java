@@ -1,5 +1,9 @@
 package vea.model;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,6 +11,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -37,5 +43,30 @@ public class Teacher {
 	
 	@Column(name = "only_online")
 	private Boolean onlyOnline;
+
+	@ManyToOne
+    @JoinColumn(name = "classroom1")
+    private Classroom classroom1;
+
+	@ManyToOne
+    @JoinColumn(name = "classroom2")
+    private Classroom classroom2;
 	
+	@ManyToOne
+    @JoinColumn(name = "classroom3")
+    private Classroom classroom3;
+
+	@ManyToOne
+    @JoinColumn(name = "classroom4")
+    private Classroom classroom4;
+
+	@ManyToOne
+    @JoinColumn(name = "classroom5")
+    private Classroom classroom5;
+
+	public List<Classroom> getUnteachableClassrooms() {
+        return Stream.of(classroom1, classroom2, classroom3, classroom4, classroom5)
+                     .filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
 }
