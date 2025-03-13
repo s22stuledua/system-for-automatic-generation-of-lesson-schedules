@@ -53,6 +53,18 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
+    public Integer getTotalLessonsByTeacherId(Long teacherId) {
+		List<Course> courses = getCoursesByTeacherId(teacherId);
+		return courses.stream().mapToInt(course -> {
+						  if (course.getTeacher2() != null) {
+							  return course.getNumberOfLessons() / 2;
+						  } else {
+							  return course.getNumberOfLessons();
+						  }
+					  }).sum();
+	}
+
+	@Override
 	public void createCourse(Course course) {
 		courseRepo.save(course);
 	}

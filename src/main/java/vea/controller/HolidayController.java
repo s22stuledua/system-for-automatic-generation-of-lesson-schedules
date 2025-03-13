@@ -1,5 +1,7 @@
 package vea.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +21,9 @@ public class HolidayController {
 
     @GetMapping("/holidays")
 	public String findAllHolidays(Model model) {
-		model.addAttribute("holidays", holidayService.findAllHolidays());
+		List<Holiday> holidays = holidayService.findAllHolidays();
+		model.addAttribute("holidays", holidays);
+		model.addAttribute("rowCount", holidays.size());
 		return "list-holidays";
 	}
 

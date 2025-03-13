@@ -78,6 +78,44 @@ public class Group {
     @JoinColumn(name = "course11")
     private Course course11;
 
+    public int calculateTotalLessons() {
+        int totalLessons = 0;
+        if (course1 != null && course1.getNumberOfLessons() != null) {
+            totalLessons += course1.getNumberOfLessons();
+        }
+        if (course2 != null && course2.getNumberOfLessons() != null) {
+            totalLessons += course2.getNumberOfLessons();
+        }
+        if (course3 != null && course3.getNumberOfLessons() != null) {
+            totalLessons += course3.getNumberOfLessons();
+        }
+        if (course4 != null && course4.getNumberOfLessons() != null) {
+            totalLessons += course4.getNumberOfLessons();
+        }
+        if (course5 != null && course5.getNumberOfLessons() != null) {
+            totalLessons += course5.getNumberOfLessons();
+        }
+        if (course6 != null && course6.getNumberOfLessons() != null) {
+            totalLessons += course6.getNumberOfLessons();
+        }
+        if (course7 != null && course7.getNumberOfLessons() != null) {
+            totalLessons += course7.getNumberOfLessons();
+        }
+        if (course8 != null && course8.getNumberOfLessons() != null) {
+            totalLessons += course8.getNumberOfLessons();
+        }
+        if (course9 != null && course9.getNumberOfLessons() != null) {
+            totalLessons += course9.getNumberOfLessons();
+        }
+        if (course10 != null && course10.getNumberOfLessons() != null) {
+            totalLessons += course10.getNumberOfLessons();
+        }
+        if (course11 != null && course11.getNumberOfLessons() != null) {
+            totalLessons += course11.getNumberOfLessons();
+        }
+        return totalLessons;
+    }
+
     @Column(name = "last_semester")
 	private Boolean lastSemester;
 

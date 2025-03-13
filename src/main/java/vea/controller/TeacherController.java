@@ -34,17 +34,20 @@ public class TeacherController {
 
 	@GetMapping("/teachers")
 	public String findAllTeachers(Model model) {
-		model.addAttribute("teachers", teacherService.findAllTeachers());
+		List<Teacher> teachers = teacherService.findAllTeachers();
+		model.addAttribute("teachers", teachers);
+		model.addAttribute("rowCount", teachers.size());
 		return "list-teachers";
 	}
 
-	@GetMapping("/teachers/{id}/courses")
+	@GetMapping("/search-teacher/{id}")
     public String getTeacherCourses(@PathVariable Long id, Model model) throws Exception {
 		try {
 			Teacher teacher = teacherService.findTeacherById(id);
             model.addAttribute("courses", courseService.getCoursesByTeacherId(id));
 			model.addAttribute("teacher", teacher);
 			model.addAttribute("name", teacher.getName());
+			model.addAttribute("totalLessons", courseService.getTotalLessonsByTeacherId(id));
             return "list-teacher";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -54,14 +57,18 @@ public class TeacherController {
 
 	@GetMapping("/search-teacher")
 	public String searchTeachers(@Param("keyword") String keyword, Model model) {
-		model.addAttribute("teachers", teacherService.searchTeacherByName(keyword));
 		model.addAttribute("keyword", keyword);
+		List<Teacher> teachers = teacherService.searchTeacherByName(keyword);
+		model.addAttribute("teachers", teachers);
+		model.addAttribute("rowCount", teachers.size());
 		return "list-teachers";
 	}
 
 	@GetMapping("/teachers/sorted")
     public String getSortedTeachers(Model model) {
-        model.addAttribute("teachers", teacherService.getSortedTeachers(isSorted));
+		List<Teacher> teachers = teacherService.getSortedTeachers(isSorted);
+        model.addAttribute("teachers", teachers);
+		model.addAttribute("rowCount", teachers.size());
         return "list-teachers";
     }
 

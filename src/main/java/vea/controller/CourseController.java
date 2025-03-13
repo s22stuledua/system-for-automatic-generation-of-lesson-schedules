@@ -34,14 +34,18 @@ public class CourseController {
 
 	@GetMapping("/courses")
 	public String findAllCourses(Model model) {
-		model.addAttribute("courses", courseService.findAllCourses());
+		List<Course> courses = courseService.findAllCourses();
+		model.addAttribute("courses", courses);
+		model.addAttribute("rowCount", courses.size());
 		return "list-courses";
 	}
 
 	@GetMapping("/search-course")
 	public String searchCourse(@Param("keyword") String keyword, Model model) {
-		model.addAttribute("courses", courseService.searchCourseByTitle(keyword));
 		model.addAttribute("keyword", keyword);
+		List<Course> courses = courseService.searchCourseByTitle(keyword);
+		model.addAttribute("courses", courses);
+		model.addAttribute("rowCount", courses.size());
 		return "list-courses";
 	}
 
@@ -58,7 +62,9 @@ public class CourseController {
 
 	@GetMapping("/courses/sorted")
     public String getSortedCourses(Model model) {
-        model.addAttribute("courses", courseService.getSortedCourses(isSorted));
+		List<Course> courses = courseService.getSortedCourses(isSorted);
+		model.addAttribute("courses", courses);
+		model.addAttribute("rowCount", courses.size());
         return "list-courses";
     }
 

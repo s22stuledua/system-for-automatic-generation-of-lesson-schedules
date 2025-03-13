@@ -34,6 +34,7 @@
 					        </form>
 						</div>
 						<div class="line-separator"></div>
+						<p>Kopējais pasniedzēju skaits: <span th:text="${rowCount}"></span></p>
 				    </div>
 						<table class="table table-striped">
 							<thead>
@@ -51,7 +52,7 @@
 									<td th:text="${teacher.name}"></td>
 									<td th:text="${teacher.position}"></td>
 									<td th:text="${teacher.onlyOnline ? '✓' : '✕'}"></td>
-									<td><a th:href="@{/teachers/{id}/courses(id=${teacher.id})}" class="btn btn-primary">
+									<td><a th:href="@{/search-teacher/{id}(id=${teacher.id})}" class="btn btn-primary">
 										<i class="fas fa-user-cog"></i></a></td>
 									<td><a th:href="@{/update-teacher/{id}(id=${teacher.id})}" class="btn btn-primary">
 										<i class="fas fa-user-edit"></i></a></td>

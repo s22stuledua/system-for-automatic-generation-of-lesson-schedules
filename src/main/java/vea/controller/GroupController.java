@@ -27,14 +27,18 @@ public class GroupController {
 
 	@GetMapping("/groups")
 	public String findAllGroups(Model model) {
-		model.addAttribute("groups", groupService.findAllGroups());
+		List<Group> groups = groupService.findAllGroups();
+		model.addAttribute("groups", groups);
+		model.addAttribute("rowCount", groups.size());
 		return "list-groups";
 	}
 
 	@GetMapping("/search-group")
 	public String searchGroup(@Param("keyword") String keyword, Model model) {
-		model.addAttribute("groups", groupService.searchGroupByTitle(keyword));
 		model.addAttribute("keyword", keyword);
+		List<Group> groups = groupService.searchGroupByTitle(keyword);
+		model.addAttribute("groups", groups);
+		model.addAttribute("rowCount", groups.size());
 		return "list-groups";
 	}
 
@@ -59,6 +63,7 @@ public class GroupController {
             groups = groups.stream().filter(Group::getActive).collect(Collectors.toList());
         }
         model.addAttribute("groups", groups);
+		model.addAttribute("rowCount", groups.size());
 		model.addAttribute("filterLastSemester", filterLastSemester);
         model.addAttribute("filterActive", filterActive);
         return "list-groups";

@@ -42,6 +42,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="group : ${groups}">
+									<p>Kopējais nodarbību skaits: <span th:text="${group.calculateTotalLessons()}"></span></p>
 									<td th:text="${group.numberOfStudents}"></td>
 									<td th:text="${group.course1!= null ? group.course1.title : ''}"></td>
 									<td th:text="${group.course2!= null ? group.course2.title : ''}"></td>

@@ -15,6 +15,8 @@ public interface CourseService {
 
 	public Course findCourseById(Long id) throws Exception;
 
+	public Integer getTotalLessonsByTeacherId(Long teacherId);
+
 	public void createCourse(Course course);
 
 	public void deleteCourse(Long id) throws Exception;

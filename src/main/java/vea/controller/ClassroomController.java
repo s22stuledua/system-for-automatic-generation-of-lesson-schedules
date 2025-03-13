@@ -1,5 +1,7 @@
 package vea.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -20,14 +22,18 @@ public class ClassroomController {
 
 	@GetMapping("/classrooms")
 	public String findAllClassrooms(Model model) {
-		model.addAttribute("classrooms", classroomService.findAllClassrooms());
+		List<Classroom> classrooms = classroomService.findAllClassrooms();
+		model.addAttribute("classrooms", classrooms);
+		model.addAttribute("rowCount", classrooms.size());
 		return "list-classrooms";
 	}
 
 	@GetMapping("/search-classroom")
 	public String searchClassroom(@Param("keyword") String keyword, Model model) {
-		model.addAttribute("classrooms", classroomService.searchClassroomByTitle(keyword));
 		model.addAttribute("keyword", keyword);
+		List<Classroom> classrooms = classroomService.searchClassroomByTitle(keyword);
+		model.addAttribute("classrooms", classrooms);
+		model.addAttribute("rowCount", classrooms.size());
 		return "list-classrooms";
 	}
 

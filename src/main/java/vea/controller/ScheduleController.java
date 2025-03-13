@@ -53,6 +53,7 @@ public class ScheduleController {
             schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(); 
         }
 		model.addAttribute("schedules", schedules);
+		model.addAttribute("rowCount", schedules.size());
         return "list-schedules";
     }
 
