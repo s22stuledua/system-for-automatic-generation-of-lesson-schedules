@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 import vea.model.Schedule;
+import vea.model.Semester;
 import vea.service.ClassroomService;
 import vea.service.CourseService;
 import vea.service.GroupService;
@@ -38,7 +39,8 @@ public class ScheduleController {
 	private ClassroomService classroomService;
 
 	@GetMapping("/schedules")
-    public String getSortedSchedules(@RequestParam(required = false) String groupTitle, @RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, Model model) {
+    public String getSortedSchedules(@RequestParam(required = false) String groupTitle, 
+	@RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, Model model) {
         List<Schedule> schedules;
 		model.addAttribute("groups", groupService.findAllGroups());
 		model.addAttribute("classrooms", classroomService.findAllClassrooms());
@@ -58,8 +60,9 @@ public class ScheduleController {
     }
 
     @PostMapping("/schedule")
-    public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, Model model) {
-        scheduleService.generateSchedule(startDate);
+    public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, 
+	@RequestParam Semester selectedSemester, Model model) {
+        scheduleService.generateSchedule(startDate, selectedSemester);
 		model.addAttribute("groups", groupService.findAllGroups());
 		model.addAttribute("classrooms", classroomService.findAllClassrooms());
 		model.addAttribute("teachers", teacherService.findAllTeachers());

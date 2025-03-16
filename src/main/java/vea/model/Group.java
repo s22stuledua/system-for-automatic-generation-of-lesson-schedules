@@ -2,6 +2,8 @@ package vea.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -116,10 +118,12 @@ public class Group {
         return totalLessons;
     }
 
+    @NotNull(message = "Šis lauks nedrīkst būt tukšs")
+    @Column(name = "semester", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Semester semester;
+
     @Column(name = "last_semester")
 	private Boolean lastSemester;
-
-    @Column(name = "active")
-	private Boolean active;
 
 }

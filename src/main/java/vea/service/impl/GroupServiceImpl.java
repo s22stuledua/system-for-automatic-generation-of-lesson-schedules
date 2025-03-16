@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vea.model.Course;
 import vea.model.Group;
+import vea.model.Semester;
 import vea.repo.CourseRepo;
 import vea.repo.GroupRepo;
 import vea.service.GroupService;
@@ -40,6 +41,11 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public Group findGroupById(Long id) throws Exception {
 		return groupRepo.findById(id).orElseThrow(() -> new Exception("Grupa ar šo ID nav atrasta"));
+	}
+
+	@Override
+	public List<Group> getGroupsSortedBySemester(Semester semester) {
+		return groupRepo.findBySemester(semester);
 	}
 
 	@Override

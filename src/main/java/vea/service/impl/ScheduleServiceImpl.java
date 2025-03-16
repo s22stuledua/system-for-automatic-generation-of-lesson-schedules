@@ -19,6 +19,7 @@ import vea.model.Classroom;
 import vea.model.Course;
 import vea.model.Equipment;
 import vea.model.Schedule;
+import vea.model.Semester;
 import vea.model.Group;
 import vea.model.Holiday;
 import vea.model.Teacher;
@@ -90,7 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
     @Override
-    public void generateSchedule(LocalDate startDate) {
+    public void generateSchedule(LocalDate startDate, Semester selectedSemester) {
         scheduleRepo.deleteAll();
 
         List<Group> groups = groupRepo.findAll();
@@ -105,20 +106,21 @@ public class ScheduleServiceImpl implements ScheduleService {
         
         LocalDate endDate = startDate.plusWeeks(16);
 
-        for (Group group : groups) {
-            if (group.getLastSemester() && group.getActive()) {
-                List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
-                newGroupSchedules.put(group, schedule);
-                scheduleRepo.saveAll(schedule);
-            }
+        List<Group> lastSemesterGroups = groups.stream()
+        .filter(group -> group.getLastSemester() && group.getSemester() == selectedSemester).collect(Collectors.toList());
+        List<Group> otherGroups = groups.stream()
+        .filter(group -> !group.getLastSemester() && group.getSemester() == selectedSemester).collect(Collectors.toList());
+
+        for (Group group : lastSemesterGroups) {
+            List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
+            newGroupSchedules.put(group, schedule);
+            scheduleRepo.saveAll(schedule);
         }
 
-        for (Group group : groups) {
-            if (!group.getLastSemester() && group.getActive()) {
-                List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
-                newGroupSchedules.put(group, schedule);
-                scheduleRepo.saveAll(schedule);
-            }
+        for (Group group : otherGroups) {
+            List<Schedule> schedule = scheduleForGroup(group, courses, classrooms, teacherAvailability, classroomAvailability, startDate, endDate, skipDates);
+            newGroupSchedules.put(group, schedule);
+            scheduleRepo.saveAll(schedule);
         }
     }
 
@@ -195,7 +197,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                                     scheduledTimes.add(lessonStartTime);
     
                                     if (courseLessonsScheduled >= course.getNumberOfLessons() ||
-                                        lessonsPerDate.get(currentDate) >= 5 || lessonsPerWeek.get(weekNumber) >= 15 ||
+                                        lessonsPerDate.get(currentDate) >= 4 || lessonsPerWeek.get(weekNumber) >= 15 ||
                                         currentCourseWeeklyCountMap.get(course) >= courseLimitPerWeek) {
                                         break;
                                     }
@@ -250,7 +252,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private boolean isTeacherAvailable(Teacher teacher, LocalDateTime lessonDateTime, 
                                    Map<Teacher, LocalDateTime> teacherAvailability) {
         LocalDateTime currentAvailability = teacherAvailability.get(teacher);
-        return currentAvailability == null || lessonDateTime.isAfter(currentAvailability.plusMinutes(100));
+        return currentAvailability == null || lessonDateTime.isAfter(currentAvailability.plusMinutes(60));
     }
     
     private void updateTeacherAvailability(Teacher teacher, LocalDateTime lessonDateTime, 
@@ -287,6 +289,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                 }
             }
         }
+        if (requiresOnlyOnlineEquipment(teacher, course)) {
+            for (Classroom classroom : classrooms) {
+                if ("Attālināti / Online".equals(classroom.getTitle())) {
+                    return classroom;
+                }
+            }
+        }
         return null;
     }
 
@@ -309,9 +318,50 @@ public class ScheduleServiceImpl implements ScheduleService {
         return equipment.equals(classroom.equipment1) || equipment.equals(classroom.equipment2) ||
                equipment.equals(classroom.equipment3) || equipment.equals(classroom.equipment4);
     }
+
+    private boolean requiresOnlyOnlineEquipment(Teacher teacher, Course course) {
+        Equipment[] permittedEquipment = {Equipment.Datorklase, Equipment.Projektors, Equipment.Ekrāns, Equipment.Tāfele_interaktīvā};
+        Equipment[] courseEquipment1 = {course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4()};
+        Equipment[] courseEquipment2 = {course.getEquipment5(), course.getEquipment6(), course.getEquipment7(), course.getEquipment8()};
+
+        if (course.hasTwoTeachers()) {
+            if (teacher.equals(course.getTeacher1())) {
+                for (Equipment equipment : courseEquipment1) {
+                    if (equipment != null && !ArrayContains(permittedEquipment, equipment)) {
+                        return false;
+                    }
+                }
+            } else if (teacher.equals(course.getTeacher2())) {
+                for (Equipment equipment : courseEquipment2) {
+                    if (equipment != null && !ArrayContains(permittedEquipment, equipment)) {
+                        return false;
+                    }
+                }
+            } 
+        } else {
+            for (Equipment equipment : courseEquipment1) {
+                if (equipment != null && !ArrayContains(permittedEquipment, equipment)) {
+                    return false;
+                }
+            }
+        } 
+        return true;
+    }
+
+    private boolean ArrayContains(Equipment[] array, Equipment equipment) {
+        for (Equipment e : array) {
+            if (e == equipment) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     private boolean isClassroomAvailable(Classroom classroom, Teacher teacher, Course course, LocalDate date, LocalTime time) {
         List<Schedule> existingSchedules = scheduleRepo.findSchedulesByClassroomAndDateAndTime(classroom, date, time);
+        if ("Attālināti / Online".equals(classroom.getTitle())) {
+            return true;
+        }
         return existingSchedules.isEmpty();
     }
 

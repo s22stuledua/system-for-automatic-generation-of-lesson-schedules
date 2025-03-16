@@ -3,6 +3,7 @@ package vea.service;
 import java.time.LocalDate;
 import java.util.List;
 import vea.model.Schedule;
+import vea.model.Semester;
 
 public interface ScheduleService {
 
@@ -18,7 +19,7 @@ public interface ScheduleService {
 
     public List<Schedule> getSchedulesSortedByTeacherAndDateAndTime(String teacherName);
     
-    public void generateSchedule(LocalDate startDate);
+    public void generateSchedule(LocalDate startDate, Semester selectedSemester);
     
     public void createLesson(Schedule lesson);
 

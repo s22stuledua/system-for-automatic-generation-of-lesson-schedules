@@ -103,12 +103,20 @@
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Šis ir pēdējais semestris</label> 
-                        <input type="checkbox" th:field="*{lastSemester}"/>
+						<label>Semestris</label> 
+                        <select th:field ="*{semester}" class="form-control"
+						    th:classappend="${#fields.hasErrors('semester')}? 'is-invalid' : ''">
+							<option value="" selected>-- Atlasiet semestri --</option>
+							<option th:each="semester : ${T(vea.model.Semester).values()}"
+							     th:value="${semester}"
+							     th:text="${semester}">
+							</option>
+						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('semester')}" th:errors="*{semester}"></div>
 					</div>
 					<div class="form-group">
-						<label>Tiks izmantota grafika izveidei</label> 
-                        <input type="checkbox" th:field="*{active}"/>
+						<label>Šis ir pēdējais semestris</label> 
+                        <input type="checkbox" th:field="*{lastSemester}"/>
 					</div>
 					<input type="submit" style="position: relative; right: -165px;" class="btn btn-primary" value="Iesniegt">
                 </form>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 import vea.model.Group;
+import vea.model.Semester;
 import vea.service.CourseService;
 import vea.service.GroupService;
 
@@ -54,18 +55,20 @@ public class GroupController {
 	}
 
 	@GetMapping("/groups/sorted")
-    public String showGroups(Model model, @RequestParam(defaultValue = "false") boolean filterLastSemester, @RequestParam(defaultValue = "false") boolean filterActive) {
+    public String showGroups(@RequestParam(required = false) String semester, 
+	@RequestParam(required = false) Boolean filterLastSemester, Model model) {
         List<Group> groups = groupService.findAllGroups();
-        if (filterLastSemester) {
-            groups = groups.stream().filter(Group::getLastSemester).collect(Collectors.toList());
-        }
-        if (filterActive) {
-            groups = groups.stream().filter(Group::getActive).collect(Collectors.toList());
-        }
+		if (semester != null && !semester.isEmpty()) {
+            Semester selectedSemester = Semester.valueOf(semester);
+            groups = groupService.getGroupsSortedBySemester(selectedSemester);
+		}
+		if (filterLastSemester != null && filterLastSemester) {
+			groups = groups.stream().filter(Group::getLastSemester).collect(Collectors.toList());
+		} 
         model.addAttribute("groups", groups);
 		model.addAttribute("rowCount", groups.size());
-		model.addAttribute("filterLastSemester", filterLastSemester);
-        model.addAttribute("filterActive", filterActive);
+		model.addAttribute("semester", semester);
+		model.addAttribute("filterLastSemester", filterLastSemester != null && filterLastSemester);
         return "list-groups";
     }
 
