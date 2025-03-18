@@ -21,7 +21,7 @@
 								<select name="selectedSemester" id="semester" class="form-control" required>
 						        	<option value="" selected>-- Atlasiet semestri --</option>
 						        	<option th:each="semester : ${T(vea.model.Semester).values()}"
-									    th:if="${semester != T(vea.model.Semester).neaktivs}"
+									    th:if="${semester != T(vea.model.Semester).Neaktivs}"
 						        	    th:value="${semester}"
 						        	    th:text="${semester}">
 						        	</option>
