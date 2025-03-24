@@ -30,4 +30,6 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findByGroup_Title(String title);
 
+    List<Schedule> findByGroupTitleOrderByDateAscTimeAsc(String groupTitle);
+
 }

@@ -80,6 +80,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public String getTitleOfFirstGroup() {
+        List<Schedule> schedules = scheduleRepo.findAll();
+        if (!schedules.isEmpty()) {
+            Group group = schedules.get(0).getGroup();
+            if (group != null) {
+                return group.getTitle();
+            }
+        }
+        return null;
+    }
+
+    @Override
 	public void createLesson(Schedule lesson) {
 		scheduleRepo.save(lesson);
 	}
@@ -225,7 +237,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
 
-                        if (isTeacherAvailable(teacher, lessonDateTime, teacherAvailability)) {
+                        if (!scheduledTimes.contains(lessonStartTime) 
+                          && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
                             Classroom classroom = findAvailableClassroom(teacher, group, course, classrooms, currentDate, lessonStartTime);
                             if (classroom != null) {
                                 Schedule lesson = new Schedule(group, course, teacher, classroom, currentDate, lessonStartTime); 
@@ -281,10 +294,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-    private boolean isTeacherAvailable(Teacher teacher, LocalDateTime lessonDateTime, 
-                                   Map<Teacher, LocalDateTime> teacherAvailability) {
-        LocalDateTime currentAvailability = teacherAvailability.get(teacher);
-        return currentAvailability == null || lessonDateTime.isAfter(currentAvailability.plusMinutes(60));
+     private boolean isTeacherAvailable(Teacher teacher, LocalDateTime lessonDateTime, 
+                                       List<Schedule> scheduledLessons) {
+        return scheduledLessons.stream().noneMatch(lesson ->
+                lesson.getTeacher().equals(teacher) &&
+                lesson.getLessonDateTime().toLocalDate().equals(lessonDateTime.toLocalDate()) &&
+                lesson.getLessonDateTime().toLocalTime().equals(lessonDateTime.toLocalTime())
+        );
     }
     
     private void updateTeacherAvailability(Teacher teacher, LocalDateTime lessonDateTime, 

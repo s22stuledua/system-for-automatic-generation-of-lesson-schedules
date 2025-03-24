@@ -4,11 +4,89 @@
     <title>Sākums</title>
 	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+        }
+        .calendar div {
+            color: black;
+            border: 3px solid black;
+            background-color: white;
+            padding: 10px;
+            min-height: 100px;
+        }
+    </style>
 </head>
 <body>
     <div th:insert="~{fragments/header :: header}"></div>
-	<div class="content">
-	    <h3 style="text-align: center;">Laipni lūdzam sistēmā automātiskai nodarbību grafiku ģenerēšanai</h3>
+	<div class="container">
+        <div class="card">
+            <div class="button-container">
+                <form action="/" method="get">
+                    <label>Atlasiet grupu:</label>
+                    <select name="groupTitle" id="groupTitle" class="form-control">
+                        <option value="" selected>--Atlasiet grupu--</option>
+                        <option th:each="group : ${groups}" th:value="${group.title}" th:text="${group.title}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary"> Filtrēt </button>
+                </form>
+                <form action="/" method="get">
+                    <label>Atlasiet auditoriju:</label>
+                    <select name="classroomTitle" id="classroomTitle" class="form-control">
+                        <option value="" selected>--Atlasiet auditoriju--</option>
+                        <option th:each="classroom : ${classrooms}" th:value="${classroom.title}" th:text="${classroom.title}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary"> Filtrēt </button>
+                </form>
+                <form action="/" method="get">
+                    <label>Atlasiet pasniedzēju:</label>
+                    <select name="teacherName" id="teacherName" class="form-control">
+                        <option value="" selected>--Atlasiet pasniedzēju--</option>
+                        <option th:each="teacher : ${teachers}" th:value="${teacher.name}" th:text="${teacher.name}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary"> Filtrēt </button>
+                </form>
+            </div>
+            <div class="content" style="padding: 5px;"></div>
+            <div class="button-container">
+                <a th:href="@{/(startDate=${startDate.minusDays(7)}, groupTitle=${groupTitle}, 
+                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary">&lt; Iepriekšējā nedēļa</a>
+                <div th:with="scheduleList=${schedules}, currentGroup=${groupTitle}, 
+                currentClassroom=${classroomTitle}, currentTeacher=${teacherName}">
+                    <div th:each="schedule, iterStat : ${scheduleList}" th:if="${iterStat.index == 0}">
+                        <a th:text="${currentGroup != null && !currentGroup.isEmpty() ? 'Nodarbību grafiks priekš ' + currentGroup :
+                            currentClassroom != null && !currentClassroom.isEmpty() ? 'Nodarbību grafiks priekš ' + currentClassroom :
+                            currentTeacher != null && !currentTeacher.isEmpty() ? 'Nodarbību grafiks priekš ' + currentTeacher :
+                            'Nodarbību grafiks priekš ' + schedule.group.title}" style="font-size: 2em;"></a>
+                    </div>
+                </div>
+                <a th:href="@{/(startDate=${startDate.plusDays(7)}, groupTitle=${groupTitle}, 
+                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary">Nākamā nedēļa &gt;</a>
+            </div>
+            <div class="line-separator"></div>
+            <div class="calendar">
+                <div></div>
+                <div th:each="dayOffset : ${#numbers.sequence(0, 6)}">
+                    <span th:text="${#temporals.format(startDate.plusDays(dayOffset), 'EEEE')}"></span><br>
+                    <span th:text="${#temporals.format(startDate.plusDays(dayOffset), 'dd/MM')}"></span>
+                </div>
+                <th:block th:each="predefinedTime : ${predefinedTimes}">
+                    <div th:text="${predefinedTime}"></div>
+                    <th:block th:each="dayOffset : ${#numbers.sequence(0, 6)}">
+                        <div th:with="scheduleList=${schedules}">
+                            <div th:each="schedule : ${scheduleList}" 
+                                 th:if="${schedule.date == startDate.plusDays(dayOffset) and schedule.time == predefinedTime}" 
+                                 style="background-color: #1DB954;">
+                                <p th:text="${schedule.course.title}"></p>
+                                <p th:text="${schedule.teacher.name}"></p>
+                                <p th:text="${schedule.classroom.title}"></p>
+                            </div>
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>        
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>
 </body>

@@ -1,6 +1,7 @@
 package vea.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.Column;
@@ -55,6 +56,10 @@ public class Schedule {
         this.classroom = classroom;
         this.date = date;
         this.time = time;
+    }
+
+    public LocalDateTime getLessonDateTime() {
+        return LocalDateTime.of(date, time);
     }
 
 }

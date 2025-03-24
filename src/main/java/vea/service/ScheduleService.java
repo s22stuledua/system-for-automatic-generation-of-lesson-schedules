@@ -18,6 +18,8 @@ public interface ScheduleService {
     public List<Schedule> getSchedulesSortedByClassroomAndDateAndTime(String classroomTitle);
 
     public List<Schedule> getSchedulesSortedByTeacherAndDateAndTime(String teacherName);
+
+    public String getTitleOfFirstGroup();
     
     public void generateSchedule(LocalDate startDate, Semester selectedSemester);
     

@@ -1,6 +1,8 @@
 package vea.controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,6 +40,16 @@ public class ScheduleController {
 	@Autowired
 	private ClassroomService classroomService;
 
+	 private final List<LocalTime> predefinedTimes = Arrays.asList(
+            LocalTime.of(9, 0),
+            LocalTime.of(10, 40),
+            LocalTime.of(13, 0),
+            LocalTime.of(14, 40),
+            LocalTime.of(16, 15),
+            LocalTime.of(17, 50),
+            LocalTime.of(19, 25)
+    );
+
 	@GetMapping("/schedules")
     public String getSortedSchedules(@RequestParam(required = false) String groupTitle, 
 	@RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, Model model) {
@@ -70,6 +82,46 @@ public class ScheduleController {
 		model.addAttribute("classrooms", classroomService.findAllClassrooms());
 		model.addAttribute("teachers", teacherService.findAllTeachers());
         return "list-schedules";
+    }
+
+	@GetMapping("/")
+    public String getSchedules(@RequestParam(required = false) String groupTitle, 
+	@RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, 
+	@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, Model model) {
+        if (startDate == null) {
+            List<Schedule> allSchedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime();
+            if (!allSchedules.isEmpty()) {
+                startDate = allSchedules.get(0).getDate().with(java.time.DayOfWeek.MONDAY);
+            } else {
+                startDate = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+            }
+        }
+        LocalDate endDate = startDate.plusDays(6);
+		List<Schedule> schedules = getSchedulesForWeek(groupTitle, classroomTitle, teacherName, startDate, endDate);
+        model.addAttribute("groups", groupService.findAllGroups());
+		model.addAttribute("classrooms", classroomService.findAllClassrooms());
+		model.addAttribute("teachers", teacherService.findAllTeachers());
+        model.addAttribute("groups", groupService.findAllGroups());
+		model.addAttribute("groupTitle", groupTitle);
+        model.addAttribute("classroomTitle", classroomTitle);
+        model.addAttribute("teacherName", teacherName);
+        model.addAttribute("schedules", schedules);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("predefinedTimes", predefinedTimes);
+        return "index";
+    }
+
+    private List<Schedule> getSchedulesForWeek(String groupTitle, String classroomTitle, String teacherName, LocalDate startDate, LocalDate endDate) {
+        if (groupTitle != null && !groupTitle.isEmpty()) {
+            return scheduleService.getSchedulesSortedByGroupAndDateAndTime(groupTitle);
+		} else if (classroomTitle != null && !classroomTitle.isEmpty()) {
+            return scheduleService.getSchedulesSortedByClassroomAndDateAndTime(classroomTitle);
+		} else if (teacherName != null && !teacherName.isEmpty()) {
+            return scheduleService.getSchedulesSortedByTeacherAndDateAndTime(teacherName);
+        } else {
+			String title = scheduleService.getTitleOfFirstGroup();
+            return scheduleService.getSchedulesSortedByGroupAndDateAndTime(title); 
+        }
     }
 
 	@GetMapping("/add-lesson")
