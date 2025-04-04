@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sākums</title>
+    <title>Nodarbību grafiks</title>
+    <link rel="icon" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
     <style>
@@ -51,18 +52,22 @@
             <div class="content" style="padding: 5px;"></div>
             <div class="button-container">
                 <a th:href="@{/(startDate=${startDate.minusDays(7)}, groupTitle=${groupTitle}, 
-                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary">&lt; Iepriekšējā nedēļa</a>
+                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Iepriekšējā nedēļa</a>
                 <div th:with="scheduleList=${schedules}, currentGroup=${groupTitle}, 
                 currentClassroom=${classroomTitle}, currentTeacher=${teacherName}">
                     <div th:each="schedule, iterStat : ${scheduleList}" th:if="${iterStat.index == 0}">
-                        <a th:text="${currentGroup != null && !currentGroup.isEmpty() ? 'Nodarbību grafiks priekš ' + currentGroup :
-                            currentClassroom != null && !currentClassroom.isEmpty() ? 'Nodarbību grafiks priekš ' + currentClassroom :
-                            currentTeacher != null && !currentTeacher.isEmpty() ? 'Nodarbību grafiks priekš ' + currentTeacher :
-                            'Nodarbību grafiks priekš ' + schedule.group.title}" style="font-size: 2em;"></a>
+                        <a>
+                            <span th:text="'Nodarbību grafiks priekš '" style="font-size: 2em;"></span>
+                            <span style="color: #1DB954; font-size: 2em;" th:text="${currentGroup != null && !currentGroup.isEmpty() ? currentGroup : 
+                                currentClassroom != null && !currentClassroom.isEmpty() ? currentClassroom : 
+                                currentTeacher != null && !currentTeacher.isEmpty() ? currentTeacher : 
+                                schedule.group.title}">
+                            </span>
+                        </a>
                     </div>
                 </div>
                 <a th:href="@{/(startDate=${startDate.plusDays(7)}, groupTitle=${groupTitle}, 
-                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary">Nākamā nedēļa &gt;</a>
+                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary">Nākamā nedēļa <i class="fa fa-arrow-right"></i></a>
             </div>
             <div class="line-separator"></div>
             <div class="calendar">
@@ -79,7 +84,7 @@
                                  th:if="${schedule.date == startDate.plusDays(dayOffset) and schedule.time == predefinedTime}" 
                                  style="background-color: #1DB954;">
                                 <p th:text="${schedule.course.title}"></p>
-                                <p th:text="${schedule.teacher.name}"></p>
+                                <p th:text="${schedule.teacher.position + '. ' + schedule.teacher.name}"></p>
                                 <p th:text="${schedule.classroom.title}"></p>
                             </div>
                         </div>
