@@ -92,6 +92,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public int calculateGroupLessons(String groupTitle) {
+        List<Schedule> schedules = getSchedulesSortedByGroupAndDateAndTime(groupTitle);
+        if (schedules.isEmpty()) {
+            return 0;
+        }
+        Group group = schedules.get(0).getGroup();
+        return group.calculateTotalLessons();
+    }
+
+    @Override
 	public void createLesson(Schedule lesson) {
 		scheduleRepo.save(lesson);
 	}
@@ -101,6 +111,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		Schedule lesson = scheduleRepo.findById(id).orElseThrow(() -> new Exception("Lekcija ar šo ID netika atrasta"));
 		scheduleRepo.deleteById(lesson.getId());
 	}
+
+    @Override
+    public void deleteAllSchedules() {
+        scheduleRepo.deleteAll();
+    }
 
     @Override
     public void generateSchedule(LocalDate startDate, Semester selectedSemester) {

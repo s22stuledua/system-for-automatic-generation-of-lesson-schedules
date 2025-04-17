@@ -20,11 +20,15 @@ public interface ScheduleService {
     public List<Schedule> getSchedulesSortedByTeacherAndDateAndTime(String teacherName);
 
     public String getTitleOfFirstGroup();
-    
-    public void generateSchedule(LocalDate startDate, Semester selectedSemester);
+
+    public int calculateGroupLessons(String groupTitle);
     
     public void createLesson(Schedule lesson);
 
     public void deleteLesson(Long id) throws Exception;
+
+    public void deleteAllSchedules();
+
+    public void generateSchedule(LocalDate startDate, Semester selectedSemester);
     
 }

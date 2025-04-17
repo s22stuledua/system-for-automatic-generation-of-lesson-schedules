@@ -6,6 +6,11 @@
 	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 	<style>.card-body { display: block; }</style>
+	<script>
+        function confirmDeletion() {
+            return confirm("Vai tiešām vēlaties dzēst grafiku?")
+        }
+    </script>
 </head>
 <body>
 	<div th:insert="~{fragments/header :: header}"></div>
@@ -15,7 +20,7 @@
 				<div th:switch="${groups}" class="container">
 					<div>
 						<div class="button-container">
-							<form th:action="@{/schedule}" method="post">
+							<form th:action="@{/generate-schedule}" method="post">
 								<label>Izvēlieties sākuma datumu:</label>
 								<input type="date" id="startDate" name="startDate" class="form-control" required>
 								<label>Izvēlieties, kuram semestrim ģenerēt grafiku:</label> 
@@ -29,6 +34,7 @@
 						        </select>
 							    <button type="submit" class="btn btn-primary"> Ģenerēt grafiku </button>
 						    </form>
+							<a href="/delete-schedule" onclick="confirmDeletion()" class="btn btn-primary"> Dzēst grafiku </a>
 							<a href="/add-lesson" class="btn btn-primary"><i class="fa fa-plus"> Pievienot lekciju </i></a>
 						</div>
 						<div class="content" style="padding: 5px;"></div>
@@ -59,7 +65,8 @@
 							</form>
 						</div>
 						<div class="line-separator"></div>
-						<p>Kopējais nodarbību skaits: <span th:text="${rowCount}"></span></p>
+						<p>Kopējais nodarbību skaits: <span th:text="${rowCount}"></span>.&nbsp;
+						Nodarbību skaitam jābūt: <span th:text="${totalLessons}"></span>.</p>
 				    </div>
 						<table class="table table-striped">
 							<thead>

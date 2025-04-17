@@ -16,6 +16,8 @@ public interface GroupService {
 
 	public List<Group> getGroupsSortedBySemester(Semester semester);
 
+	public int calculateTotalLessonsBySemester(Semester semester);
+
 	public void createGroup(Group group);
 
 	public void deleteGroup(Long id) throws Exception;

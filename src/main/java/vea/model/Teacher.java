@@ -44,25 +44,20 @@ public class Teacher {
 	@Column(name = "only_online")
 	private Boolean onlyOnline;
 
-	@ManyToOne
     @JoinColumn(name = "classroom1")
-    private Classroom classroom1;
+    @ManyToOne private Classroom classroom1;
 
-	@ManyToOne
     @JoinColumn(name = "classroom2")
-    private Classroom classroom2;
+    @ManyToOne private Classroom classroom2;
 	
-	@ManyToOne
     @JoinColumn(name = "classroom3")
-    private Classroom classroom3;
+    @ManyToOne private Classroom classroom3;
 
-	@ManyToOne
     @JoinColumn(name = "classroom4")
-    private Classroom classroom4;
+    @ManyToOne private Classroom classroom4;
 
-	@ManyToOne
     @JoinColumn(name = "classroom5")
-    private Classroom classroom5;
+    @ManyToOne private Classroom classroom5;
 
 	public List<Classroom> getUnteachableClassrooms() {
         return Stream.of(classroom1, classroom2, classroom3, classroom4, classroom5)

@@ -29,20 +29,16 @@ public class Schedule {
     private Long id;
     
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
-    @ManyToOne
-    private Group group;
+    @ManyToOne private Group group;
 
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
-    @ManyToOne
-    private Course course;
+    @ManyToOne private Course course;
 
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
-    @ManyToOne
-    private Teacher teacher;
+    @ManyToOne private Teacher teacher;
 
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
-    @ManyToOne
-    private Classroom classroom;
+    @ManyToOne private Classroom classroom;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

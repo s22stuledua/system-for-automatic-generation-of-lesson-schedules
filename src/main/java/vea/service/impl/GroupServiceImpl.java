@@ -49,6 +49,12 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
+	public int calculateTotalLessonsBySemester(Semester semester) {
+		List<Group> groups = groupRepo.findBySemester(semester);
+		return groups.stream().mapToInt(Group::calculateTotalLessons).sum();
+	}
+
+	@Override
 	public void createGroup(Group group) {
 		groupRepo.save(group);
 	}

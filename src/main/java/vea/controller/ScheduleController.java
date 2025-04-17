@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
+import vea.model.Group;
 import vea.model.Schedule;
 import vea.model.Semester;
 import vea.service.ClassroomService;
@@ -40,42 +41,57 @@ public class ScheduleController {
 	@Autowired
 	private ClassroomService classroomService;
 
-	 private final List<LocalTime> predefinedTimes = Arrays.asList(
-            LocalTime.of(9, 0),
-            LocalTime.of(10, 40),
-            LocalTime.of(13, 0),
-            LocalTime.of(14, 40),
-            LocalTime.of(16, 15),
-            LocalTime.of(17, 50),
-            LocalTime.of(19, 25)
+	private final List<LocalTime> predefinedTimes = Arrays.asList(
+        LocalTime.of(9, 0),
+        LocalTime.of(10, 40),
+        LocalTime.of(13, 0),
+        LocalTime.of(14, 40),
+        LocalTime.of(16, 15),
+        LocalTime.of(17, 50),
+        LocalTime.of(19, 25)
     );
 
 	@GetMapping("/schedules")
     public String getSortedSchedules(@RequestParam(required = false) String groupTitle, 
 	@RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, Model model) {
         List<Schedule> schedules;
+		int totalLessons = 0;
 		model.addAttribute("groups", groupService.findAllGroups());
 		model.addAttribute("classrooms", classroomService.findAllClassrooms());
 		model.addAttribute("teachers", teacherService.findAllTeachers());
         if (groupTitle != null && !groupTitle.isEmpty()) {
             schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(groupTitle);
+			totalLessons = scheduleService.calculateGroupLessons(groupTitle);	
 		} else if (classroomTitle != null && !classroomTitle.isEmpty()) {
             schedules = scheduleService.getSchedulesSortedByClassroomAndDateAndTime(classroomTitle);
 		} else if (teacherName != null && !teacherName.isEmpty()) {
             schedules = scheduleService.getSchedulesSortedByTeacherAndDateAndTime(teacherName);
         } else {
             schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime(); 
+			if (!schedules.isEmpty()) {
+				Schedule firstSchedule = schedules.get(0);
+				Group firstGroup = firstSchedule.getGroup();
+				Semester semester = firstGroup.getSemester();
+				totalLessons = groupService.calculateTotalLessonsBySemester(semester);
+			}
         }
 		model.addAttribute("schedules", schedules);
 		model.addAttribute("rowCount", schedules.size());
+		if (totalLessons == 0) {
+			model.addAttribute("totalLessons", "Nav definēts");
+		} else {
+			model.addAttribute("totalLessons", totalLessons);
+		}
         return "list-schedules";
     }
 
-    @PostMapping("/schedule")
+    @PostMapping("/generate-schedule")
     public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, 
 	@RequestParam Semester selectedSemester, Model model) {
         scheduleService.generateSchedule(startDate, selectedSemester);
 		List<Schedule> schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime();
+		int totalLessons = groupService.calculateTotalLessonsBySemester(selectedSemester);
+		model.addAttribute("totalLessons", totalLessons);
 		model.addAttribute("schedules", schedules);
 		model.addAttribute("rowCount", schedules.size());
 		model.addAttribute("groups", groupService.findAllGroups());
@@ -195,5 +211,11 @@ public class ScheduleController {
 			return "error-page";
 		}
 	}
+
+	@GetMapping("/delete-schedule")
+    public String deleteAllSchedules() {
+        scheduleService.deleteAllSchedules();
+		return "redirect:/schedules";
+    }
 
 }

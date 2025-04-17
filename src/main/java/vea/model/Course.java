@@ -37,13 +37,11 @@ public class Course {
     private Integer numberOfLessons;
 
     @NotNull(message = "Šis lauks nedrīkst būt tukšs")
-    @ManyToOne
     @JoinColumn(name = "teacher1", nullable = false)
-    public Teacher teacher1;
+    @ManyToOne public Teacher teacher1;
 
-    @ManyToOne
     @JoinColumn(name = "teacher2")
-    public Teacher teacher2;
+    @ManyToOne public Teacher teacher2;
 
     public boolean hasTwoTeachers() {
         return teacher2 != null;

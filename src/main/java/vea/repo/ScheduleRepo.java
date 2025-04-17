@@ -28,7 +28,7 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findSchedulesByClassroomAndDateAndTime(Classroom classroom, LocalDate date, LocalTime time);
 
-    List<Schedule> findByGroup_Title(String title);
+    List<Schedule> findByGroupTitle(String title);
 
     List<Schedule> findByGroupTitleOrderByDateAscTimeAsc(String groupTitle);
 

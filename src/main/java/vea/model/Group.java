@@ -36,49 +36,38 @@ public class Group {
     @Column(name = "number_of_students", nullable = false)
     private Integer numberOfStudents;
 
-    @ManyToOne
     @JoinColumn(name = "course1")
-    private Course course1;
-
-    @ManyToOne
+    @ManyToOne private Course course1;
+    
     @JoinColumn(name = "course2")
-    private Course course2;
+    @ManyToOne private Course course2;
 
-    @ManyToOne
     @JoinColumn(name = "course3")
-    private Course course3;
-
-    @ManyToOne
+    @ManyToOne private Course course3;
+    
     @JoinColumn(name = "course4")
-    private Course course4;
-
-    @ManyToOne
+    @ManyToOne private Course course4;
+    
     @JoinColumn(name = "course5")
-    private Course course5;
-
-    @ManyToOne
+    @ManyToOne private Course course5;
+    
     @JoinColumn(name = "course6")
-    private Course course6;
-
-    @ManyToOne
+    @ManyToOne private Course course6;
+    
     @JoinColumn(name = "course7")
-    private Course course7;
+    @ManyToOne private Course course7;
 
-    @ManyToOne
     @JoinColumn(name = "course8")
-    private Course course8;
+    @ManyToOne private Course course8;
 
-    @ManyToOne
     @JoinColumn(name = "course9")
-    private Course course9;
+    @ManyToOne private Course course9;
 
-    @ManyToOne
     @JoinColumn(name = "course10")
-    private Course course10;
+    @ManyToOne private Course course10;
 
-    @ManyToOne
     @JoinColumn(name = "course11")
-    private Course course11;
+    @ManyToOne private Course course11;
 
     public int calculateTotalLessons() {
         int totalLessons = 0;
