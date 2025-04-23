@@ -106,6 +106,18 @@ public class GroupController {
 		}
 	}
 
+	@PostMapping("/update-group/{id}")
+	public String updateGroup(@PathVariable Long id, @Valid Group group, BindingResult result, Model model) {
+		if (result.hasErrors()) {
+			group.setId(id);
+			model.addAttribute("course", courseService.findAllCourses());
+			return "update-group";
+		}
+		groupService.createGroup(group);
+		model.addAttribute("group", groupService.findAllGroups());
+		return "redirect:/groups";
+	}
+
 	@GetMapping("/edit-group/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) throws Exception {
 		try {
@@ -118,16 +130,16 @@ public class GroupController {
 		}
 	}
 
-	@PostMapping("/update-group/{id}")
-	public String updateGroup(@PathVariable Long id, @Valid Group group, BindingResult result, Model model) {
+	@PostMapping("/edit-group/{id}")
+	public String editGroup(@PathVariable Long id, @Valid Group group, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			group.setId(id);
 			model.addAttribute("course", courseService.findAllCourses());
-			return "update-group";
+			return "edit-group";
 		}
 		groupService.createGroup(group);
 		model.addAttribute("group", groupService.findAllGroups());
-		return "redirect:/groups";
+		return "redirect:/search-group/" + id;
 	}
 
 	@GetMapping("/remove-group/{id}")

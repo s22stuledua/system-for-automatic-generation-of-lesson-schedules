@@ -73,15 +73,15 @@
             <div class="calendar">
                 <div></div>
                 <div th:each="dayOffset : ${#numbers.sequence(0, 6)}">
-                    <span th:text="${#temporals.format(startDate.plusDays(dayOffset), 'EEEE')}"></span><br>
+                    <span th:text="${#strings.capitalize(#temporals.format(startDate.plusDays(dayOffset), 'EEEE'))}"></span><br>
                     <span th:text="${#temporals.format(startDate.plusDays(dayOffset), 'dd/MM')}"></span>
                 </div>
-                <th:block th:each="predefinedTime : ${predefinedTimes}">
-                    <div th:text="${predefinedTime}"></div>
+                <th:block th:each="startTime, iterStat : ${startTimes}">
+                    <div th:text="${startTime + ' - ' + endTimes[iterStat.index]}"></div>
                     <th:block th:each="dayOffset : ${#numbers.sequence(0, 6)}">
                         <div th:with="scheduleList=${schedules}">
                             <div th:each="schedule : ${scheduleList}" 
-                                 th:if="${schedule.date == startDate.plusDays(dayOffset) and schedule.time == predefinedTime}" 
+                                 th:if="${schedule.date == startDate.plusDays(dayOffset) and schedule.time == startTime}" 
                                  style="background-color: #1DB954;">
                                 <p th:text="${schedule.course.title}"></p>
                                 <p th:text="${schedule.teacher.position + '. ' + schedule.teacher.name}"></p>

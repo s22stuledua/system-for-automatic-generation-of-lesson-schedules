@@ -71,6 +71,27 @@
 							<td th:text="${teacher.classroom5!= null ? teacher.classroom5.title : ''}"></td>
 						</tr>
 					</tbody>
+				</table>	
+				<a th:text="'Nepiemērotu datumu saraksts priekš ' + ${name}" style="font-size: 2em; position: relative; right: -360px;"></a>
+				<div class="line-separator"></div>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Datums</th>
+							<th>Sākuma laiks</th>
+							<th>Beigu laiks</th>
+							<th>Dzēst</th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="unavailability : ${unavailabilities}">
+					    	<td th:text="${unavailability.date}"></td>
+					    	<td th:text="${unavailability.startTime}"></td>
+					    	<td th:text="${unavailability.endTime}"></td>
+							<td><a th:href="@{/remove-unavailability/{teacherId}(teacherId=${unavailability.teacher.id}, unavailabilityId=${unavailability.id})}"
+								class="btn btn-primary" onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
+					    </tr>
+					</tbody>
 				</table>
 			</div>
 		</div>

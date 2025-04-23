@@ -48,6 +48,7 @@ public class TeacherController {
 			model.addAttribute("teacher", teacher);
 			model.addAttribute("name", teacher.getName());
 			model.addAttribute("totalLessons", courseService.getTotalLessonsByTeacherId(id));
+			model.addAttribute("unavailabilities", teacherService.getUnavailabilitiesForTeacher(teacher));
             return "list-teacher";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());

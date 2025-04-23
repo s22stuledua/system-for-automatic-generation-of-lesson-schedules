@@ -41,7 +41,7 @@ public class ScheduleController {
 	@Autowired
 	private ClassroomService classroomService;
 
-	private final List<LocalTime> predefinedTimes = Arrays.asList(
+	private final List<LocalTime> startTimes = Arrays.asList(
         LocalTime.of(9, 0),
         LocalTime.of(10, 40),
         LocalTime.of(13, 0),
@@ -49,6 +49,16 @@ public class ScheduleController {
         LocalTime.of(16, 15),
         LocalTime.of(17, 50),
         LocalTime.of(19, 25)
+    );
+
+	private final List<LocalTime> endTimes = Arrays.asList(
+        LocalTime.of(10, 30),
+        LocalTime.of(12, 10),
+        LocalTime.of(14, 30),
+        LocalTime.of(16, 10),
+        LocalTime.of(17, 45),
+        LocalTime.of(19, 20),
+        LocalTime.of(20, 55)
     );
 
 	@GetMapping("/schedules")
@@ -123,7 +133,8 @@ public class ScheduleController {
         model.addAttribute("teacherName", teacherName);
         model.addAttribute("schedules", schedules);
         model.addAttribute("startDate", startDate);
-        model.addAttribute("predefinedTimes", predefinedTimes);
+        model.addAttribute("startTimes", startTimes);
+		model.addAttribute("endTimes", endTimes);
         return "index";
     }
 

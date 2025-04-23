@@ -119,6 +119,18 @@ public class CourseController {
 		}
 	}
 
+	@PostMapping("/update-course/{id}")
+	public String updateCourse(@PathVariable Long id, @Valid Course course, BindingResult result, Model model) {
+		if (result.hasErrors()) {
+			course.setId(id);
+			model.addAttribute("teacher", teacherService.findAllTeachers());
+			return "update-course";
+		}
+		courseService.createCourse(course);
+		model.addAttribute("course", courseService.findAllCourses());
+		return "redirect:/courses";
+	}
+
 	@GetMapping("/edit-course/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) throws Exception {
 		try {
@@ -131,8 +143,8 @@ public class CourseController {
 		}
 	}
 
-	@PostMapping("/update-course/{id}")
-	public String updateCourse(@PathVariable Long id, @Valid Course course, BindingResult result, Model model) {
+	@PostMapping("/edit-course/{id}")
+	public String editCourse(@PathVariable Long id, @Valid Course course, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			course.setId(id);
 			model.addAttribute("teacher", teacherService.findAllTeachers());
@@ -140,7 +152,7 @@ public class CourseController {
 		}
 		courseService.createCourse(course);
 		model.addAttribute("course", courseService.findAllCourses());
-		return "redirect:/courses";
+		return "redirect:/search-course/" + id;
 	}
 
 	@GetMapping("/remove-course/{id}")

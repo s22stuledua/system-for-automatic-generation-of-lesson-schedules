@@ -13,7 +13,7 @@
         <div class="card">
 			<a th:href="@{/search-group/{id}(id=${group.id})}" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
             <div class="card-body">
-                <form action="#" th:action="@{/update-group/{id}(id=${group.id})}" th:object="${group}" method="post">
+                <form action="#" th:action="@{/edit-group/{id}(id=${group.id})}" th:object="${group}" method="post">
 					<div class="form-group">
 						<label>Nosaukums</label> 
 						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"

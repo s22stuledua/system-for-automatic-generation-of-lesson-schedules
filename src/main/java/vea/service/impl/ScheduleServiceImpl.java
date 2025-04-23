@@ -23,11 +23,13 @@ import vea.model.Semester;
 import vea.model.Group;
 import vea.model.Holiday;
 import vea.model.Teacher;
+import vea.model.TeacherUnavailability;
 import vea.repo.ClassroomRepo;
 import vea.repo.CourseRepo;
 import vea.repo.GroupRepo;
 import vea.repo.HolidayRepo;
 import vea.repo.ScheduleRepo;
+import vea.repo.TeacherUnavailabilityRepo;
 import vea.service.ScheduleService;
 
 @Service
@@ -47,6 +49,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
     private HolidayRepo holidayRepo;
+
+    @Autowired
+    private TeacherUnavailabilityRepo teacherUnavailabilityRepo;
 
     @Override
     public List<Schedule> findAllSchedules() {
@@ -117,6 +122,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepo.deleteAll();
     }
 
+    List<LocalTime> predefinedTimes = Arrays.asList(
+        LocalTime.of(9, 0),
+        LocalTime.of(10, 40),
+        LocalTime.of(13, 0),
+        LocalTime.of(14, 40),
+        LocalTime.of(16, 15),
+        LocalTime.of(17, 50),
+        LocalTime.of(19, 25)
+    );
+
     @Override
     public void generateSchedule(LocalDate startDate, Semester selectedSemester) {
         scheduleRepo.deleteAll();
@@ -155,22 +170,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                                         Map<Teacher, LocalDateTime> teacherAvailability,
                                         Map<Classroom, LocalDateTime> classroomAvailability,
                                         LocalDate startDate, LocalDate endDate, Set<LocalDate> skipDates) {
-        List<Schedule> scheduledLessons = new ArrayList<>();
-        List<LocalTime> predefinedTimes = Arrays.asList(
-                LocalTime.of(9, 0),
-                LocalTime.of(10, 40),
-                LocalTime.of(13, 0),
-                LocalTime.of(14, 40),
-                LocalTime.of(16, 15),
-                LocalTime.of(17, 50),
-                LocalTime.of(19, 25)
-        );
-    
         Map<LocalDate, Integer> lessonsPerDate = new HashMap<>();
         Map<Integer, Integer> lessonsPerWeek = new HashMap<>();
         Map<Integer, Map<Course, Integer>> courseWeeklyCount = new HashMap<>();
         Map<LocalDate, Set<LocalTime>> groupScheduleOnDate = new HashMap<>();
 
+        List<Schedule> scheduledLessons = new ArrayList<>();
         List<Course> twoTeacherCourses = new ArrayList<>();
         List<Course> oneTeacherCourses = new ArrayList<>();
     
@@ -309,9 +314,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-     private boolean isTeacherAvailable(Teacher teacher, LocalDateTime lessonDateTime, 
-                                       List<Schedule> scheduledLessons) {
-        return scheduledLessons.stream().noneMatch(lesson ->
+    private boolean isTeacherAvailable(Teacher teacher, LocalDateTime lessonDateTime, List<Schedule> scheduledLessons) {
+        List<TeacherUnavailability> unavailabilityList = teacherUnavailabilityRepo
+                .findByTeacherAndDate(teacher, lessonDateTime.toLocalDate());
+
+        boolean isUnavailable = unavailabilityList.stream().anyMatch(unavailability ->
+                (unavailability.getStartTime().equals(predefinedTimes.get(0)) && unavailability.getEndTime().equals(predefinedTimes.get(predefinedTimes.size()-1)))
+                || (!lessonDateTime.toLocalTime().isBefore(unavailability.getStartTime()) && 
+                    lessonDateTime.toLocalTime().isBefore(unavailability.getEndTime()))
+        );
+
+        return !isUnavailable && scheduledLessons.stream().noneMatch(lesson ->
                 lesson.getTeacher().equals(teacher) &&
                 lesson.getLessonDateTime().toLocalDate().equals(lessonDateTime.toLocalDate()) &&
                 lesson.getLessonDateTime().toLocalTime().equals(lessonDateTime.toLocalTime())
