@@ -80,7 +80,7 @@ public class ClassroomController {
 	}
 
 	@GetMapping("/remove-classroom/{id}")
-	public String deleteClassroom(@PathVariable Long id, Model model) throws Exception {
+	public String deleteClassroom(@PathVariable Long id, Model model) {
 		try {
 			classroomService.deleteClassroom(id);
 		    model.addAttribute("classroom", classroomService.findAllClassrooms());

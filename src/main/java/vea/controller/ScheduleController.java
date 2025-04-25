@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -64,9 +66,14 @@ public class ScheduleController {
 	@GetMapping("/schedules")
     public String getSortedSchedules(@RequestParam(required = false) String groupTitle, 
 	@RequestParam(required = false) String classroomTitle, @RequestParam(required = false) String teacherName, Model model) {
-        List<Schedule> schedules;
 		int totalLessons = 0;
-		model.addAttribute("groups", groupService.findAllGroups());
+        List<Schedule> schedules;
+		List<Schedule> allSchedules = scheduleService.findAllSchedules();
+		Set<String> groupTitlesInSchedules = allSchedules.stream()
+                .map(schedule -> schedule.getGroup().getTitle()).collect(Collectors.toSet());
+		List<Group> groupsInSchedules = groupService.findAllGroups().stream()
+                .filter(group -> groupTitlesInSchedules.contains(group.getTitle())).collect(Collectors.toList());		
+        model.addAttribute("groups", groupsInSchedules);
 		model.addAttribute("classrooms", classroomService.findAllClassrooms());
 		model.addAttribute("teachers", teacherService.findAllTeachers());
         if (groupTitle != null && !groupTitle.isEmpty()) {
@@ -124,10 +131,14 @@ public class ScheduleController {
         }
         LocalDate endDate = startDate.plusDays(6);
 		List<Schedule> schedules = getSchedulesForWeek(groupTitle, classroomTitle, teacherName, startDate, endDate);
-        model.addAttribute("groups", groupService.findAllGroups());
+		List<Schedule> allSchedules = scheduleService.findAllSchedules();
+		Set<String> groupTitlesInSchedules = allSchedules.stream()
+                .map(schedule -> schedule.getGroup().getTitle()).collect(Collectors.toSet());
+		List<Group> groupsInSchedules = groupService.findAllGroups().stream()
+                .filter(group -> groupTitlesInSchedules.contains(group.getTitle())).collect(Collectors.toList());		
+        model.addAttribute("groups", groupsInSchedules);
 		model.addAttribute("classrooms", classroomService.findAllClassrooms());
 		model.addAttribute("teachers", teacherService.findAllTeachers());
-        model.addAttribute("groups", groupService.findAllGroups());
 		model.addAttribute("groupTitle", groupTitle);
         model.addAttribute("classroomTitle", classroomTitle);
         model.addAttribute("teacherName", teacherName);
@@ -212,7 +223,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping("/remove-lesson/{id}")
-	public String deleteLesson(@PathVariable Long id, Model model) throws Exception {
+	public String deleteLesson(@PathVariable Long id, Model model) {
 		try {
 			scheduleService.deleteLesson(id);
 		    model.addAttribute("group", groupService.findAllGroups());

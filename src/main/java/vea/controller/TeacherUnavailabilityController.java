@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vea.model.Teacher;
 import vea.service.TeacherService;
 
@@ -43,7 +42,7 @@ public class TeacherUnavailabilityController {
             for (LocalDate date : localDates) {
                 teacherService.addUnavailability(teacher, date, startTime, endTime);
             }
-            return "redirect:/teachers";
+            return "redirect:/search-teacher/" + id;
         } catch (Exception e) {
             model.addAttribute("errormsg", e.getMessage());
             return "error-page";
@@ -51,15 +50,14 @@ public class TeacherUnavailabilityController {
     }
 
     @GetMapping("/remove-unavailability/{teacherId}")
-    public String deleteUnavailability(@PathVariable Long teacherId, @RequestParam Long unavailabilityId, 
-    RedirectAttributes redirectAttributes) {
+    public String deleteUnavailability(@PathVariable Long teacherId, @RequestParam Long unavailabilityId, Model model) {
         try {
             teacherService.deleteUnavailability(teacherId, unavailabilityId);
-            redirectAttributes.addFlashAttribute("successMessage", "Unavailability deleted successfully.");
+            return "redirect:/search-teacher/" + teacherId;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete unavailability.");
+            model.addAttribute("errormsg", e.getMessage());
+			return "error-page";
         }
-        return "redirect:/search-teacher/" + teacherId;
     }
     
 }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Visi kopējie kursi</title>
+	<link rel="icon" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+	<style>.card-body { display: block; }</style>
+	<script>
+		function confirmDeletion() {
+		    return confirm("Vai tiešām vēlaties dzēst?");
+		}
+	</script>	
+</head>
+<body>
+	<div th:insert="~{fragments/header :: header}"></div>
+	<div class="container" style="padding-left: 280px; padding-right: 280px;">
+		<div class="card">
+			<div class="card-body">
+				<div th:switch="${groupCourses}" class="container">
+					<div>
+						<div class="button-container">
+							<a href="/add-group_course" class="btn btn-primary"><i class="fa fa-plus"> Pievienot kopējo kursu </i></a>
+						</div>
+						<div class="line-separator"></div>
+						<p>Kopējo kursu skaits: <span th:text="${rowCount}"></span></p>
+				    </div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Grupa Nr.1</th>
+									<th>Grupa Nr.2</th>
+									<th>Kurss</th>
+									<th>Rediģēt</th>
+									<th>Dzēst</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="group_course : ${groupCourses}">
+									<td th:text="${group_course.group1.title}"></td>
+									<td th:text="${group_course.group2.title}"></td>
+									<td th:text="${group_course.course.title}"></td>
+									<td><a th:href="@{/update-group_course/{id}(id=${group_course.id})}" class="btn btn-primary">
+										<i class="fas fa-pen-alt"></i></a></td>
+									<td><a th:href="@{/remove-group_course/{id}(id=${group_course.id})}" class="btn btn-primary" 
+										onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

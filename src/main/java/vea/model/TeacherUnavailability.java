@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -26,14 +27,17 @@ public class TeacherUnavailability {
     @Column(name = "idunavailability")
     private Long id;
 
-    @ManyToOne
-    private Teacher teacher;
+    @JoinColumn(name = "teacher")
+    @ManyToOne private Teacher teacher;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "startTime")
     private LocalTime startTime;
     
+    @Column(name = "endTime")
     private LocalTime endTime;
 
     public TeacherUnavailability(Teacher teacher, LocalDate date, LocalTime startTime, LocalTime endTime) {

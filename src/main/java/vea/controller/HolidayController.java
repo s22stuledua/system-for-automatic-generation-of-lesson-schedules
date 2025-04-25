@@ -70,7 +70,7 @@ public class HolidayController {
 	}
 
     @GetMapping("/remove-holiday/{id}")
-	public String deleteHoliday(@PathVariable Long id, Model model) throws Exception {
+	public String deleteHoliday(@PathVariable Long id, Model model) {
 		try {
 			holidayService.deleteHoliday(id);
 		    model.addAttribute("holiday", holidayService.findAllHolidays());

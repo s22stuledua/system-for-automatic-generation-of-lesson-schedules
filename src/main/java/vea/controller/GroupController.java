@@ -143,7 +143,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/remove-group/{id}")
-	public String deleteGroup(@PathVariable Long id, Model model) throws Exception {
+	public String deleteGroup(@PathVariable Long id, Model model) {
 		try {
 			groupService.deleteGroup(id);
 		    model.addAttribute("group", groupService.findAllGroups());

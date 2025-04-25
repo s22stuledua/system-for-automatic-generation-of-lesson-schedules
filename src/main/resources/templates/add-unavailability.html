@@ -23,7 +23,7 @@
     <div class="container">
         <h3>Pievienot nepiemērotu datumu</h3>
         <div class="card">
-			<a href="/teachers" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+            <a th:href="@{/search-teacher/{id}(id=${teacher.id})}" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
             <div class="card-body">
                 <form action="#" th:action="@{/add-unavailability/{id}(id=${teacher.id})}" th:object="${teacherUnavailability}" method="post">
                     <div class="form-group">
@@ -59,7 +59,7 @@
                             <option value="20:55">20:55</option>
                         </select>
                     </div>
-					<input type="submit" style="position: relative; right: -190px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -194px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

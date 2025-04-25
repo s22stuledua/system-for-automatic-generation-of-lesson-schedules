@@ -156,7 +156,7 @@ public class CourseController {
 	}
 
 	@GetMapping("/remove-course/{id}")
-	public String deleteCourse(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) throws Exception {
+	public String deleteCourse(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			courseService.deleteCourse(id);
 		    model.addAttribute("course", courseService.findAllCourses());

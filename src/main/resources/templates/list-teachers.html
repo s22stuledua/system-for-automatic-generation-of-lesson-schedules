@@ -19,7 +19,7 @@
 </head>
 <body>
 	<div th:insert="~{fragments/header :: header}"></div>
-	<div class="container" style="padding-left: 260px; padding-right: 260px;">
+	<div class="container" style="padding-left: 300px; padding-right: 300px;">
 		<div class="card">
 			<div class="card-body">
 				<div th:switch="${teachers}" class="container">
@@ -43,7 +43,6 @@
 									<th>Vārds</th>
 									<th>Amats</th>
 									<th>Var mācīt tikai tiešsaistē</th>
-									<th>Datumi</th>
 									<th>Detaļas</th>
 									<th>Rediģēt</th>
 									<th>Dzēst</th>
@@ -54,8 +53,6 @@
 									<td th:text="${teacher.name}"></td>
 									<td th:text="${teacher.position}"></td>
 									<td th:text="${teacher.onlyOnline ? '✓' : '✕'}"></td>
-									<td><a th:href="@{/add-unavailability/{id}(id=${teacher.id})}" class="btn btn-primary">
-										<i class="fa fa-plus"></i></a></td>
 									<td><a th:href="@{/search-teacher/{id}(id=${teacher.id})}" class="btn btn-primary">
 										<i class="fas fa-user-cog"></i></a></td>
 									<td><a th:href="@{/update-teacher/{id}(id=${teacher.id})}" class="btn btn-primary">

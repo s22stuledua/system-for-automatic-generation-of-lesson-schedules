@@ -30,7 +30,7 @@ public class HolidayServiceImpl implements HolidayService {
 
 	@Override
 	public void deleteHoliday(Long id) throws Exception {
-		Holiday holiday = holidayRepo.findById(id).orElseThrow(() -> new Exception("Brīvdiena ar šo ID nav atrasta"));
+		Holiday holiday = holidayRepo.findById(id).orElseThrow(() -> new Exception("Brīvdiena ar šo ID netika atrasta"));
 		holidayRepo.deleteById(holiday.getId());
 	}
 

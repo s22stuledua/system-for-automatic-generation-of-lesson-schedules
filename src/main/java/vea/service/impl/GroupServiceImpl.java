@@ -34,13 +34,13 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public List<Group> getGroupsByCourseId(Long courseId) {
-		Course course = courseRepo.findById(courseId).orElseThrow(() -> new RuntimeException("Kurss nav atrasts"));
+		Course course = courseRepo.findById(courseId).orElseThrow(() -> new RuntimeException("Kurss netika atrasts"));
         return groupRepo.findByCourse(course);
     }
 
 	@Override
 	public Group findGroupById(Long id) throws Exception {
-		return groupRepo.findById(id).orElseThrow(() -> new Exception("Grupa ar šo ID nav atrasta"));
+		return groupRepo.findById(id).orElseThrow(() -> new Exception("Grupa ar šo ID netika atrasta"));
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void deleteGroup(Long id) throws Exception {
-		Group group = groupRepo.findById(id).orElseThrow(() -> new Exception("Grupa ar šo ID nav atrasta"));
+		Group group = groupRepo.findById(id).orElseThrow(() -> new Exception("Grupa ar šo ID netika atrasta"));
 		groupRepo.deleteById(group.getId());
 	}
 
