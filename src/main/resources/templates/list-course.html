@@ -38,7 +38,6 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Nosaukums</th>
 								<th>Nodarbību skaits</th>
 								<th>Pirmais pasniedzējs</th>
 								<th>Otrais pasniedzējs</th>
@@ -46,7 +45,6 @@
 						</thead>
 						<tbody>
 							<tr th:each="course : ${courses}">
-								<td th:text="${course.title}"></td>
 								<td th:text="${course.numberOfLessons}"></td>
 								<td th:text="${course.teacher1.name}"></td>
 								<td th:text="${course.teacher2!= null ? course.teacher2.name : ''}"></td>

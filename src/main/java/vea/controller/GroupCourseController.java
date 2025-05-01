@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import jakarta.validation.Valid;
+import vea.model.Course;
+import vea.model.Group;
 import vea.model.GroupCourse;
 import vea.service.CourseService;
 import vea.service.GroupCourseService;
@@ -26,6 +28,11 @@ public class GroupCourseController {
 
 	@Autowired
 	private CourseService courseService;
+
+	private boolean validateGroupCourse(Group group, Course course) {
+        List<Course> groupCourses = group.getCourses();
+        return groupCourses.contains(course);
+    }
 
     @GetMapping("/group_courses")
 	public String findAllGroupCourses(Model model) {
@@ -48,23 +55,31 @@ public class GroupCourseController {
 	}
 
 	@PostMapping("/add-group_course")
-	public String createGroupCourse(@Valid GroupCourse groupCourse, BindingResult result, Model model) {
-		if (result.hasErrors()) {
+    public String createGroupCourse(@Valid GroupCourse groupCourse, BindingResult result, Model model) {
+        if (result.hasErrors()) {
             model.addAttribute("groups", groupService.findAllGroups());
-			model.addAttribute("courses", courseService.findAllCourses());
-			return "add-group_course";
-		}
-		groupCourseService.createGroupCourse(groupCourse);
-		model.addAttribute("group_course", groupCourseService.findAllGroupCourses());
-		return "redirect:/group_courses";
-	}
+            model.addAttribute("courses", courseService.findAllCourses());
+            return "add-group_course";
+        }
+        boolean isValidGroup1 = validateGroupCourse(groupCourse.getGroup1(), groupCourse.getCourse());
+        boolean isValidGroup2 = validateGroupCourse(groupCourse.getGroup2(), groupCourse.getCourse());
+        if (!isValidGroup1 || !isValidGroup2) {
+            model.addAttribute("errormsg", "Izvēlētajam kursam jābūt piešķirtam abām atlasītajām grupām");
+            model.addAttribute("groups", groupService.findAllGroups());
+            model.addAttribute("courses", courseService.findAllCourses());
+            return "add-group_course";
+        }
+        groupCourseService.createGroupCourse(groupCourse);
+        model.addAttribute("group_course", groupCourseService.findAllGroupCourses());
+        return "redirect:/group_courses";
+    }
 
 	@GetMapping("/update-group_course/{id}")
 	public String showUpdateForm(@PathVariable Long id, Model model) throws Exception {
 		try {
 		    model.addAttribute("group_course", groupCourseService.findGroupCourseById(id));
-            model.addAttribute("group", groupService.findAllGroups());
-			model.addAttribute("course", courseService.findAllCourses());
+            model.addAttribute("groups", groupService.findAllGroups());
+			model.addAttribute("courses", courseService.findAllCourses());
 		    return "update-group_course";
 		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
@@ -73,16 +88,25 @@ public class GroupCourseController {
 	}
 
 	@PostMapping("/update-group_course/{id}")
-	public String updateGroupCourse(@PathVariable Long id, @Valid GroupCourse groupCourse, BindingResult result, Model model) {
+	public String updateGroupCourse(@PathVariable Long id, @Valid GroupCourse groupCourse, BindingResult result, Model model) throws Exception {
 		if (result.hasErrors()) {
 			groupCourse.setId(id);
-            model.addAttribute("group", groupService.findAllGroups());
-			model.addAttribute("course", courseService.findAllCourses());
-			return "update-group_course";
-		}
-		groupCourseService.createGroupCourse(groupCourse);
+            model.addAttribute("groups", groupService.findAllGroups());
+            model.addAttribute("courses", courseService.findAllCourses());
+            return "add-group_course";
+        }
+        boolean isValidGroup1 = validateGroupCourse(groupCourse.getGroup1(), groupCourse.getCourse());
+        boolean isValidGroup2 = validateGroupCourse(groupCourse.getGroup2(), groupCourse.getCourse());
+        if (!isValidGroup1 || !isValidGroup2) {
+			model.addAttribute("group_course", groupCourseService.findGroupCourseById(id));
+            model.addAttribute("errormsg", "Izvēlētajam kursam jābūt piešķirtam abām atlasītajām grupām");
+            model.addAttribute("groups", groupService.findAllGroups());
+            model.addAttribute("courses", courseService.findAllCourses());
+            return "update-group_course";
+        }
+        groupCourseService.createGroupCourse(groupCourse);
         model.addAttribute("group_course", groupCourseService.findAllGroupCourses());
-		return "redirect:/group_courses";
+        return "redirect:/group_courses";
 	}
 
     @GetMapping("/remove-group_course/{id}")

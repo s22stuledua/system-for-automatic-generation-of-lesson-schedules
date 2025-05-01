@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 	<style>.invalid-feedback {left: 918px;} .form-group label {flex: 1;}</style>
+	<style>
+        .errormsg {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 	<div th:insert="~{fragments/header :: header}"></div>
@@ -19,7 +24,7 @@
 						<label>Grupa Nr.1</label> 
                         <select th:field ="*{group1}" class="form-control" th:classappend="${#fields.hasErrors('group1')}? 'is-invalid' : ''">
 							<option value="" selected>-- Atlasiet grupu --</option>
-							   <option th:each="group: ${group}" th:value="${group.id}" th:text="${group.title}"></option>
+							   <option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.title}"></option>
 						</select>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('group1')}" th:errors="*{group1}"></div>
 					</div>
@@ -27,7 +32,7 @@
 						<label>Grupa Nr.2</label> 
                         <select th:field ="*{group2}" class="form-control" th:classappend="${#fields.hasErrors('group2')}? 'is-invalid' : ''">
 							<option value="" selected>-- Atlasiet grupu --</option>
-							   <option th:each="group: ${group}" th:value="${group.id}" th:text="${group.title}"></option>
+							   <option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.title}"></option>
 						</select>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('group2')}" th:errors="*{group2}"></div>
 					</div>
@@ -35,15 +40,16 @@
 						<label>Kurss</label>
 						<select th:field ="*{course}" class="form-control" th:classappend="${#fields.hasErrors('course')}? 'is-invalid' : ''">
 							<option value="" selected>-- Atlasiet kursu --</option>
-							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
+							   <option th:each="course: ${courses}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('course')}" th:errors="*{course}"></div>
 					</div>
 					<input type="submit" style="position: relative; right: -135px;" class="btn btn-primary" value="Iesniegt">
                 </form>
             </div>
+			<div th:if="${errormsg}" class="errormsg" th:text="${errormsg}"></div>
         </div>
-		<div class="content" style="padding: 130px;"></div>
+		<div class="content" style="padding: 106px;"></div>
     </div>
     <div th:insert="~{fragments/footer :: footer}"></div>
 </body>

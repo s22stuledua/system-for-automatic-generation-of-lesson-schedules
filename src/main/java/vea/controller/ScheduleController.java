@@ -106,15 +106,7 @@ public class ScheduleController {
     public String generateSchedule(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, 
 	@RequestParam Semester selectedSemester, Model model) {
         scheduleService.generateSchedule(startDate, selectedSemester);
-		List<Schedule> schedules = scheduleService.getSchedulesSortedByGroupAndDateAndTime();
-		int totalLessons = groupService.calculateTotalLessonsBySemester(selectedSemester);
-		model.addAttribute("totalLessons", totalLessons);
-		model.addAttribute("schedules", schedules);
-		model.addAttribute("rowCount", schedules.size());
-		model.addAttribute("groups", groupService.findAllGroups());
-		model.addAttribute("classrooms", classroomService.findAllClassrooms());
-		model.addAttribute("teachers", teacherService.findAllTeachers());
-        return "list-schedules";
+        return "redirect:/schedules";
     }
 
 	@GetMapping("/")

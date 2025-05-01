@@ -1,5 +1,7 @@
 package vea.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -68,6 +70,22 @@ public class Group {
 
     @JoinColumn(name = "course11")
     @ManyToOne private Course course11;
+
+    public List<Course> getCourses() {
+        List<Course> courses = new ArrayList<>();
+        if (course1 != null) courses.add(course1);
+        if (course2 != null) courses.add(course2);
+        if (course3 != null) courses.add(course3);
+        if (course4 != null) courses.add(course4);
+        if (course5 != null) courses.add(course5);
+        if (course6 != null) courses.add(course6);
+        if (course7 != null) courses.add(course7);
+        if (course8 != null) courses.add(course8);
+        if (course9 != null) courses.add(course9);
+        if (course10 != null) courses.add(course10);
+        if (course11 != null) courses.add(course11);
+        return courses;
+    }
 
     public int calculateTotalLessons() {
         int totalLessons = 0;
