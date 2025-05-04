@@ -18,13 +18,13 @@
 						<label>Nosaukums</label> 
 						<input type="text" th:field="*{title}" class="form-control" id="title" placeholder="Nosaukums"
 						    th:classappend="${#fields.hasErrors('title')}? 'is-invalid' : ''"/>
-						<p th:if="${#fields.hasErrors('title')}" class="invalid-feedback"th:errors="*{title}"></p>
+						<p th:if="${#fields.hasErrors('title')}" class="invalid-feedback" th:errors="*{title}"></p>
 					</div>
 					<div class="form-group">
 						<label>Nodarbību skaits</label> 
 						<input type="text" th:field="*{numberOfLessons}" class="form-control" id="number_of_lessons" placeholder="Nodarbību skaits"
 						    th:classappend="${#fields.hasErrors('numberOfLessons')}? 'is-invalid' : ''"/>
-						<p th:if="${#fields.hasErrors('numberOfLessons')}" class="invalid-feedback"th:errors="*{numberOfLessons}"></p>
+						<p th:if="${#fields.hasErrors('numberOfLessons')}" class="invalid-feedback" th:errors="*{numberOfLessons}"></p>
 					</div>
 					<div class="form-group">
 						<label>Pirmais pasniedzējs</label>

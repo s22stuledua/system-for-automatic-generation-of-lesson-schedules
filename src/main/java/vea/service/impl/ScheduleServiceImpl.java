@@ -12,14 +12,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vea.model.Classroom;
 import vea.model.Course;
 import vea.model.Equipment;
 import vea.model.Schedule;
+import vea.model.Settings;
 import vea.model.Semester;
 import vea.model.Group;
 import vea.model.GroupCourse;
@@ -31,6 +34,7 @@ import vea.repo.CourseRepo;
 import vea.repo.GroupCourseRepo;
 import vea.repo.GroupRepo;
 import vea.repo.HolidayRepo;
+import vea.repo.SettingsRepo;
 import vea.repo.ScheduleRepo;
 import vea.repo.TeacherUnavailabilityRepo;
 import vea.service.ScheduleService;
@@ -59,15 +63,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private TeacherUnavailabilityRepo teacherUnavailabilityRepo;
 
-    private static final int MAX_LESSONS_PER_WEEK = 15;
-    private static final int MAX_LESSONS_PER_DATE = 4;
+    @Autowired
+    private SettingsRepo settingsRepo;
+
+    private Settings settings;
+
+    @Transactional
+    private void initConfig() {
+        Optional<Settings> settingsOptional = settingsRepo.findById(1L);
+        this.settings = settingsOptional.orElseGet(Settings::new);
+    }
 
     private Map<Group, Map<LocalDate, Integer>> lessonsPerDateMap = new HashMap<>();
     private Map<Group, Map<Integer, Integer>> lessonsPerWeekMap = new HashMap<>();
+    private Map<Group, Set<Course>> scheduledCoursesPerGroup = new HashMap<>();
 
     List<Schedule> scheduledLessons = new ArrayList<>();
-
-    private Map<Group, Set<Course>> scheduledCoursesPerGroup = new HashMap<>();
 
     List<LocalTime> predefinedTimes = Arrays.asList(
         LocalTime.of(9, 0),
@@ -146,11 +157,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void deleteAllSchedules() {
         scheduleRepo.deleteAll();
+        scheduledLessons.clear();
     }
 
     @Override
     public void generateSchedule(LocalDate startDate, Semester selectedSemester) {
-        scheduleRepo.deleteAll();
+        initConfig();
+        deleteAllSchedules();
 
         List<Group> groups = groupRepo.findAll();
         List<Course> courses = courseRepo.findAll();
@@ -164,7 +177,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Map<Classroom, LocalDateTime> classroomAvailability = new HashMap<>();
         Map<Group, Map<LocalDate, Set<LocalTime>>> occupiedTimes = new HashMap<>();
         
-        LocalDate endDate = startDate.plusWeeks(16);
+        LocalDate endDate = startDate.plusWeeks(settings.getWeeksInSemester());
 
         for (GroupCourse groupCourse : groupCourses) {
             Group group1 = groupCourse.getGroup1();
@@ -254,8 +267,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             int currentLessonsPerWeek = lessonsPerWeek.getOrDefault(weekNumber, 0);
             int currentCourseWeeklyCount = currentCourseWeeklyCountMap.getOrDefault(course, 0);
             int currentCourseTwoWeekCount = currentCourseTwoWeekCountMap.getOrDefault(course, 0);
-    
-            if (currentLessonsPerWeek < MAX_LESSONS_PER_WEEK && currentCourseWeeklyCount < courseLimitPerWeek
+
+            if (currentLessonsPerWeek < settings.getMaxLessonsPerWeek() && currentCourseWeeklyCount < courseLimitPerWeek
             && currentCourseTwoWeekCount < courseLimitPerTwoWeeks) {
                 for (LocalTime lessonStartTime : predefinedTimes) {
                     Set<LocalTime> scheduledTimes = groupScheduleOnDate.computeIfAbsent(currentDate, k -> new HashSet<>());
@@ -265,8 +278,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                     }
 
                     int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
-    
-                    if (currentLessonsPerDate < MAX_LESSONS_PER_DATE) {
+                    
+                    if (currentLessonsPerDate < settings.getMaxLessonsPerDate()) {
                         Teacher teacher = selectTeacher(course, courseLessonsScheduled);
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
     
@@ -377,7 +390,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             int currentCourseWeeklyCount = currentCourseWeeklyCountMap.getOrDefault(course, 0);
             int currentCourseTwoWeekCount = currentCourseTwoWeekCountMap.getOrDefault(course, 0);
 
-            if (currentLessonsPerWeek < MAX_LESSONS_PER_WEEK && currentCourseWeeklyCount < courseLimitPerWeek 
+            if (currentLessonsPerWeek < settings.getMaxLessonsPerWeek() && currentCourseWeeklyCount < courseLimitPerWeek 
             && currentCourseTwoWeekCount < courseLimitPerTwoWeeks) {
                 for (LocalTime lessonStartTime : predefinedTimes) {
                     Set<LocalTime> scheduledTimes = groupScheduleOnDate.computeIfAbsent(currentDate, k -> new HashSet<>());
@@ -389,7 +402,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
                     int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
 
-                    if (currentLessonsPerDate < MAX_LESSONS_PER_DATE) {
+                    if (currentLessonsPerDate < settings.getMaxLessonsPerDate()) {
                         Teacher teacher = selectTeacher(course, courseLessonsScheduled);
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
 
@@ -442,34 +455,34 @@ public class ScheduleServiceImpl implements ScheduleService {
     private int getCourseLimitPerWeek(Course course) {
         int totalLessons = course.getNumberOfLessons();
         if (totalLessons <= 32) {
-            return 2;
+            return settings.getWeekLimit1();
         } else if (totalLessons > 32 && totalLessons <= 48) {
-            return 3;
+            return settings.getWeekLimit2();
         } else if (totalLessons > 48 && totalLessons <= 64) {
-            return 4;
+            return settings.getWeekLimit3();
         } else if (totalLessons > 64 && totalLessons <= 72) {
-            return 5;
+            return settings.getWeekLimit4();
         } else {
-            return 8;
+            return settings.getWeekLimit5();
         }
     }
 
     private int getCourseLimitPerTwoWeeks(Course course) {
         int totalLessons = course.getNumberOfLessons();
         if (totalLessons <= 16) {
-            return 2;
+            return settings.getTwoWeekLimit1();
         } else if (totalLessons > 16 && totalLessons <= 24) {
-            return 3;
+            return settings.getTwoWeekLimit2();
         } else if (totalLessons > 24 && totalLessons <= 32) {
-            return 4;
+            return settings.getTwoWeekLimit3();
         } else if (totalLessons > 32 && totalLessons <= 48) {
-            return 6;
+            return settings.getTwoWeekLimit4();
         } else if (totalLessons > 48 && totalLessons <= 64) {
-            return 8;
+            return settings.getTwoWeekLimit5();
         } else if (totalLessons > 64 && totalLessons <= 100) {
-            return 10;     
+            return settings.getTwoWeekLimit6();
         } else {
-            return 16;
+            return settings.getTwoWeekLimit7();
         }
     }
 
@@ -680,8 +693,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                                     Map<Course, Integer> currentCourseWeeklyCountMap, Map<Course, Integer> currentCourseTwoWeekCountMap,
                                     Map<LocalDate, Integer> lessonsPerDate, Map<Integer, Integer> lessonsPerWeek) {
         return courseLessonsScheduled >= course.getNumberOfLessons() ||
-               lessonsPerDate.get(currentDate) >= MAX_LESSONS_PER_DATE || 
-               lessonsPerWeek.get(weekNumber) >= MAX_LESSONS_PER_WEEK ||
+               lessonsPerDate.get(currentDate) >= settings.getMaxLessonsPerDate() || 
+               lessonsPerWeek.get(weekNumber) >= settings.getMaxLessonsPerWeek() ||
                currentCourseWeeklyCountMap.get(course) >= getCourseLimitPerWeek(course) || 
                currentCourseTwoWeekCountMap.get(course) >= getCourseLimitPerTwoWeeks(course);
     }
