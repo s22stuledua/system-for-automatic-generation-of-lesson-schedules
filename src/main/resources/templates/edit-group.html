@@ -11,7 +11,7 @@
     <div class="container">
         <h3>Rediģēt grupu</h3>
         <div class="card">
-			<a th:href="@{/search-group/{id}(id=${group.id})}" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			<a th:href="@{/search-group/{id}(id=${group.id})}" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
             <div class="card-body">
                 <form action="#" th:action="@{/edit-group/{id}(id=${group.id})}" th:object="${group}" method="post">
 					<div class="form-group">
@@ -22,7 +22,7 @@
 					</div>
 					<div class="form-group">
 						<label>Studentu skaits</label> 
-						<input type="text" th:field="*{numberOfStudents}" class="form-control" id="numberOfStudents" placeholder="Studentu skaits"
+						<input type="number" th:field="*{numberOfStudents}" class="form-control" id="numberOfStudents" placeholder="Studentu skaits"
 						    th:classappend="${#fields.hasErrors('numberOfStudents')}? 'is-invalid' : ''"/>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('numberOfStudents')}" th:errors="*{numberOfStudents}"></div>
 					</div>
@@ -119,7 +119,7 @@
 						<label>Šis ir pēdējais semestris</label> 
                         <input type="checkbox" th:field="*{lastSemester}"/>
 					</div>
-					<input type="submit" style="position: relative; right: -165px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -166px;" class="btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

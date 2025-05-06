@@ -25,11 +25,17 @@ public class Settings {
     @Column(name = "weeksInSemester")
     private int weeksInSemester = 16;
 
-    @Column(name = "maxLessonsPerWeek ")
-    private int maxLessonsPerWeek = 15;
+    @Column(name = "maxLessonsPerDateForGroup")
+    private int maxLessonsPerDateForGroup = 4;
 
-    @Column(name = "maxLessonsPerDate")
-    private int maxLessonsPerDate = 4;
+    @Column(name = "maxLessonsPerWeekForGroup")
+    private int maxLessonsPerWeekForGroup = 15;
+
+    @Column(name = "maxLessonsPerDateForTeacher")
+    private int maxLessonsPerDateForTeacher = 4;
+
+    @Column(name = "maxLessonsPerWeekForTeacher")
+    private int maxLessonsPerWeekForTeacher = 20;
 
     @Column(name = "weekLimit1")
     private int weekLimit1 = 2;

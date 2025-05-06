@@ -24,9 +24,9 @@
 			<div th:switch="${courses}" class="container">
 				<div>
 					<div class="button-container">
-						<a href="/teachers" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+						<a href="/teachers" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
 			            <a th:text="'Kursu saraksts priekš ' + ${name}" style="font-size: 2em;"></a>
-			            <a th:href="@{/remove-teacher/{id}(id=${teacher.id})}" class="btn btn-primary" 
+			            <a th:href="@{/remove-teacher/{id}(id=${teacher.id})}" class="btn-primary" 
 			                onclick="return confirmDeletion()"><i class="fas fa-user-times"> Dzēst </i></a>
 					</div>
 					<div class="line-separator"></div>
@@ -76,7 +76,7 @@
 			<div class="container">	
 				<div class="button-container">	
 				<a th:text="'Nepiemērotu datumu saraksts priekš ' + ${name}" style="font-size: 2em; position: relative; right: -360px;"></a>
-				<a th:href="@{/add-unavailability/{id}(id=${teacher.id})}" class="btn btn-primary"><i class="fa fa-plus"> Pievienot nepiemērotu datumu </i></a>
+				<a th:href="@{/add-unavailability/{id}(id=${teacher.id})}" class="btn-primary"><i class="fa fa-plus"> Pievienot nepiemērotu datumu </i></a>
 			    </div>
 				<div class="line-separator"></div>
 				<table class="table table-striped">
@@ -94,7 +94,7 @@
 					    	<td th:text="${unavailability.startTime}"></td>
 					    	<td th:text="${unavailability.endTime}"></td>
 							<td><a th:href="@{/remove-unavailability/{teacherId}(teacherId=${unavailability.teacher.id}, unavailabilityId=${unavailability.id})}"
-								class="btn btn-primary" onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
+								class="btn-primary" onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
 					    </tr>
 					</tbody>
 				</table>

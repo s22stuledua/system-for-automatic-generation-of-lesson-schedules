@@ -18,8 +18,8 @@
         <h3>Rediģēt lekciju</h3>
         <div class="card">
 			<div class="button-container">
-				<a href="/schedules" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
-			    <a th:href="@{/remove-lesson/{id}(id=${lesson.id})}" class="btn btn-primary" onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
+				<a href="/schedules" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			    <a th:href="@{/remove-lesson/{id}(id=${lesson.id})}" class="btn-primary" onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
 			</div>
             <div class="card-body">
                 <form action="#" th:action="@{/update-lesson/{id}(id=${lesson.id})}" th:object="${lesson}" method="post">
@@ -63,7 +63,7 @@
 						</select>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('classroom')}" th:errors="*{classroom}"></div>
 					</div>
-					<input type="submit" style="position: relative; right: -154px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -154px;" class="btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

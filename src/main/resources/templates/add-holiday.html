@@ -12,7 +12,7 @@
     <div class="container">
         <h3>Pievienot brīvdienu</h3>
         <div class="card">
-			<a href="/holidays" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			<a href="/holidays" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
             <div class="card-body">
                 <form action="#" th:action="@{/add-holiday}" th:object="${holiday}" method="post">
                     <div class="form-group">
@@ -25,7 +25,7 @@
 						<label>Datums</label>
 						<input type="date" th:field="*{date}" class="form-control" id="date" required/>
 					</div>
-					<input type="submit" style="position: relative; right: -154px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -154px;" class="btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

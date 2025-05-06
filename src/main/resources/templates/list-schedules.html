@@ -32,10 +32,10 @@
 						        	    th:text="${semester}">
 						        	</option>
 						        </select>
-							    <button type="submit" class="btn btn-primary"> Ģenerēt grafiku </button>
+							    <button type="submit" class="btn-primary"> Ģenerēt grafiku </button>
 						    </form>
-							<a href="/delete-schedule" onclick="confirmDeletion()" class="btn btn-primary"> Dzēst grafiku </a>
-							<a href="/add-lesson" class="btn btn-primary"><i class="fa fa-plus"> Pievienot lekciju </i></a>
+							<a href="/delete-schedule" onclick="confirmDeletion()" class="btn-primary"> Dzēst grafiku </a>
+							<a href="/add-lesson" class="btn-primary"><i class="fa fa-plus"> Pievienot lekciju </i></a>
 						</div>
 						<div class="content" style="padding: 5px;"></div>
 						<div class="button-container">
@@ -45,7 +45,7 @@
 									<option value="" selected>--Atlasiet grupu--</option>
 									<option th:each="group : ${groups}" th:value="${group.title}" th:text="${group.title}"></option>
 								</select>
-								<button type="submit" class="btn btn-primary"> Filtrēt </button>
+								<button type="submit" class="btn-primary"> Filtrēt </button>
 							</form>
 							<form action="/schedules" method="get">
 								<label>Atlasiet auditoriju:</label>
@@ -53,7 +53,7 @@
 									<option value="" selected>--Atlasiet auditoriju--</option>
 									<option th:each="classroom : ${classrooms}" th:value="${classroom.title}" th:text="${classroom.title}"></option>
 								</select>
-								<button type="submit" class="btn btn-primary"> Filtrēt </button>
+								<button type="submit" class="btn-primary"> Filtrēt </button>
 							</form>
 							<form action="/schedules" method="get">
 								<label>Atlasiet pasniedzēju:</label>
@@ -61,7 +61,7 @@
 									<option value="" selected>--Atlasiet pasniedzēju--</option>
 									<option th:each="teacher : ${teachers}" th:value="${teacher.name}" th:text="${teacher.name}"></option>
 								</select>
-								<button type="submit" class="btn btn-primary"> Filtrēt </button>
+								<button type="submit" class="btn-primary"> Filtrēt </button>
 							</form>
 						</div>
 						<div class="line-separator"></div>
@@ -88,7 +88,7 @@
 									<td th:text="${schedule.course.title}"></td>
 									<td th:text="${schedule.teacher.name}"></td>
 									<td th:text="${schedule.classroom.title}"></td>
-									<td><a th:href="@{/update-lesson/{id}(id=${schedule.id})}" class="btn btn-primary">
+									<td><a th:href="@{/update-lesson/{id}(id=${schedule.id})}" class="btn-primary">
 										<i class="fas fa-pen-alt"></i></a></td>
 								</tr>
 							</tbody>

@@ -12,7 +12,7 @@
     <div class="container">
         <h3>Pievienot lekciju</h3>
         <div class="card">
-			<a href="/schedules" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			<a href="/schedules" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
             <div class="card-body">
                 <form action="#" th:action="@{/add-lesson}" th:object="${schedule}" method="post">
 					<div class="form-group">
@@ -63,7 +63,7 @@
 						</select>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('classroom')}" th:errors="*{classroom}"></div>
 					</div>
-					<input type="submit" style="position: relative; right: -154px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -154px;" class="btn-primary" value="Iesniegt">
                 </form>
             </div>
         </div>

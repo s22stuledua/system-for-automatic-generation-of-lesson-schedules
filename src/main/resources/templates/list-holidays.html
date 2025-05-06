@@ -20,7 +20,7 @@
 				<div th:switch="${holidays}" class="container">
 					<div>
 						<div class="button-container">
-							<a href="/add-holiday" class="btn btn-primary"><i class="fa fa-plus"> Pievienot brīvdienu </i></a>
+							<a href="/add-holiday" class="btn-primary"><i class="fa fa-plus"> Pievienot brīvdienu </i></a>
 						</div>
 						<div class="line-separator"></div>
 						<p>Kopējais brīvdienu skaits: <span th:text="${rowCount}"></span></p>
@@ -38,9 +38,9 @@
 								<tr th:each="holiday : ${holidays}">
 									<td th:text="${holiday.title}"></td>
 									<td th:text="${holiday.date}"></td>
-									<td><a th:href="@{/update-holiday/{id}(id=${holiday.id})}" class="btn btn-primary">
+									<td><a th:href="@{/update-holiday/{id}(id=${holiday.id})}" class="btn-primary">
 										<i class="fas fa-pen-alt"></i></a></td>
-									<td><a th:href="@{/remove-holiday/{id}(id=${holiday.id})}" class="btn btn-primary" 
+									<td><a th:href="@{/remove-holiday/{id}(id=${holiday.id})}" class="btn-primary" 
 										onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
 								</tr>
 							</tbody>

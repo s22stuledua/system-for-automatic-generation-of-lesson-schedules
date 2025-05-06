@@ -77,6 +77,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     private Map<Group, Map<LocalDate, Integer>> lessonsPerDateMap = new HashMap<>();
     private Map<Group, Map<Integer, Integer>> lessonsPerWeekMap = new HashMap<>();
     private Map<Group, Set<Course>> scheduledCoursesPerGroup = new HashMap<>();
+    private Map<Teacher, Map<Integer, Integer>> teacherWeeklyCount = new HashMap<>();
+    private Map<Teacher, Map<LocalDate, Integer>> teacherDailyCount = new HashMap<>();
 
     List<Schedule> scheduledLessons = new ArrayList<>();
 
@@ -268,7 +270,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             int currentCourseWeeklyCount = currentCourseWeeklyCountMap.getOrDefault(course, 0);
             int currentCourseTwoWeekCount = currentCourseTwoWeekCountMap.getOrDefault(course, 0);
 
-            if (currentLessonsPerWeek < settings.getMaxLessonsPerWeek() && currentCourseWeeklyCount < courseLimitPerWeek
+            if (currentLessonsPerWeek < settings.getMaxLessonsPerWeekForGroup() && currentCourseWeeklyCount < courseLimitPerWeek
             && currentCourseTwoWeekCount < courseLimitPerTwoWeeks) {
                 for (LocalTime lessonStartTime : predefinedTimes) {
                     Set<LocalTime> scheduledTimes = groupScheduleOnDate.computeIfAbsent(currentDate, k -> new HashSet<>());
@@ -279,11 +281,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
                     int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
                     
-                    if (currentLessonsPerDate < settings.getMaxLessonsPerDate()) {
+                    if (currentLessonsPerDate < settings.getMaxLessonsPerDateForGroup()) {
                         Teacher teacher = selectTeacher(course, courseLessonsScheduled);
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
     
-                        if (!scheduledTimes.contains(lessonStartTime) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
+                        if (canScheduleLesson(teacher, currentDate, weekNumber) && !scheduledTimes.contains(lessonStartTime) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
                             Classroom classroom = findAvailableClassroom(teacher, group1, course, classrooms, currentDate, lessonStartTime, numberOfStudents);
     
                             if (classroom != null) {
@@ -292,6 +294,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 scheduledLessons.add(lessonForGroup1);
                                 scheduledLessons.add(lessonForGroup2);
                                 updateTeacherAvailability(teacher, lessonDateTime, teacherAvailability);
+                                updateTeacherCount(teacher, currentDate, weekNumber);
                                 lessonsPerDate.merge(currentDate, 1, Integer::sum);
                                 lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
                                 currentCourseWeeklyCountMap.merge(course, 1, Integer::sum);
@@ -390,7 +393,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             int currentCourseWeeklyCount = currentCourseWeeklyCountMap.getOrDefault(course, 0);
             int currentCourseTwoWeekCount = currentCourseTwoWeekCountMap.getOrDefault(course, 0);
 
-            if (currentLessonsPerWeek < settings.getMaxLessonsPerWeek() && currentCourseWeeklyCount < courseLimitPerWeek 
+            if (currentLessonsPerWeek < settings.getMaxLessonsPerWeekForGroup() && currentCourseWeeklyCount < courseLimitPerWeek 
             && currentCourseTwoWeekCount < courseLimitPerTwoWeeks) {
                 for (LocalTime lessonStartTime : predefinedTimes) {
                     Set<LocalTime> scheduledTimes = groupScheduleOnDate.computeIfAbsent(currentDate, k -> new HashSet<>());
@@ -402,17 +405,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 
                     int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
 
-                    if (currentLessonsPerDate < settings.getMaxLessonsPerDate()) {
+                    if (currentLessonsPerDate < settings.getMaxLessonsPerDateForGroup()) {
                         Teacher teacher = selectTeacher(course, courseLessonsScheduled);
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
 
-                        if (!scheduledTimes.contains(lessonStartTime) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
+                        if (canScheduleLesson(teacher, currentDate, weekNumber) && !scheduledTimes.contains(lessonStartTime) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
                             Classroom classroom = findAvailableClassroom(teacher, group, course, classrooms, currentDate, lessonStartTime);
                             
                             if (classroom != null && !occupiedTimes.getOrDefault(currentDate, new HashSet<>()).contains(lessonStartTime)) {
                                 Schedule lesson = new Schedule(group, course, teacher, classroom, currentDate, lessonStartTime); 
                                 scheduledLessons.add(lesson);
                                 updateTeacherAvailability(teacher, lessonDateTime, teacherAvailability);
+                                updateTeacherCount(teacher, currentDate, weekNumber);
                                 lessonsPerDate.merge(currentDate, 1, Integer::sum);
                                 lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
                                 currentCourseWeeklyCountMap.merge(course, 1, Integer::sum);
@@ -515,6 +519,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     private void updateTeacherAvailability(Teacher teacher, LocalDateTime lessonDateTime, 
                                            Map<Teacher, LocalDateTime> teacherAvailability) {
         teacherAvailability.put(teacher, lessonDateTime);
+    }
+
+    private void updateTeacherCount(Teacher teacher, LocalDate currentDate, int weekNumber) {
+        Map<Integer, Integer> weeklyCountMap = teacherWeeklyCount.computeIfAbsent(teacher, k -> new HashMap<>());
+        weeklyCountMap.merge(weekNumber, 1, Integer::sum);
+        
+        Map<LocalDate, Integer> dailyCountMap = teacherDailyCount.computeIfAbsent(teacher, k -> new HashMap<>());
+        dailyCountMap.merge(currentDate, 1, Integer::sum);
     }
 
     private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, List<Classroom> classrooms, LocalDate date, LocalTime time, int numberOfStudents) {
@@ -669,6 +681,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         return !scheduledCoursesPerGroup.containsKey(group) || !scheduledCoursesPerGroup.get(group).contains(course);
     }
 
+    private boolean canScheduleLesson(Teacher teacher, LocalDate currentDate, int weekNumber) {
+        int dailyLessons = teacherDailyCount.getOrDefault(teacher, new HashMap<>()).getOrDefault(currentDate, 0);
+        int weeklyLessons = teacherWeeklyCount.getOrDefault(teacher, new HashMap<>()).getOrDefault(weekNumber, 0);
+        return dailyLessons < settings.getMaxLessonsPerDateForTeacher() && weeklyLessons < settings.getMaxLessonsPerWeekForTeacher();
+    }
+
     private void recordOccupiedTimes(List<Schedule> schedules, Map<LocalDate, Set<LocalTime>> occupiedTimes) {
         for (Schedule schedule : schedules) {
             LocalDate date = schedule.getDate();
@@ -693,8 +711,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                                     Map<Course, Integer> currentCourseWeeklyCountMap, Map<Course, Integer> currentCourseTwoWeekCountMap,
                                     Map<LocalDate, Integer> lessonsPerDate, Map<Integer, Integer> lessonsPerWeek) {
         return courseLessonsScheduled >= course.getNumberOfLessons() ||
-               lessonsPerDate.get(currentDate) >= settings.getMaxLessonsPerDate() || 
-               lessonsPerWeek.get(weekNumber) >= settings.getMaxLessonsPerWeek() ||
+               lessonsPerDate.get(currentDate) >= settings.getMaxLessonsPerDateForGroup() || 
+               lessonsPerWeek.get(weekNumber) >= settings.getMaxLessonsPerWeekForGroup() ||
                currentCourseWeeklyCountMap.get(course) >= getCourseLimitPerWeek(course) || 
                currentCourseTwoWeekCountMap.get(course) >= getCourseLimitPerTwoWeeks(course);
     }

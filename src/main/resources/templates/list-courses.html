@@ -26,11 +26,11 @@
 				<div th:switch="${courses}" class="container">
 					<div>
 						<div class="button-container">
-							<a href="/add-course" class="btn btn-primary"><i class="fa fa-plus"> Pievienot kursu </i></a>
-							<a href="/courses/toggleSort" class="btn btn-primary"><i class="fas fa-sort-alpha-down"> Kārtot </i></a>
+							<a href="/add-course" class="btn-primary"><i class="fa fa-plus"> Pievienot kursu </i></a>
+							<a href="/courses/toggleSort" class="btn-primary"><i class="fas fa-sort-alpha-down"> Kārtot </i></a>
 							<form th:action="@{/search-course}" class="form-inline">
 						        <input class="form-control" name= "keyword" id = "keyword" type="text" placeholder="Meklēt" aria-label="Search" th:value="${keyword}">
-						        <button class="btn btn-primary" type="submit">
+						        <button class="btn-primary" type="submit">
 									<i class="fa fa-search" aria-hidden="true"></i>
 								</button>
 					        </form>
@@ -56,11 +56,11 @@
 									<td th:text="${course.numberOfLessons}"></td>
 									<td th:text="${course.teacher1.name}"></td>
 									<td th:text="${course.teacher2!= null ? course.teacher2.name : ''}"></td>
-									<td><a th:href="@{/search-course/{id}(id=${course.id})}" class="btn btn-primary">
+									<td><a th:href="@{/search-course/{id}(id=${course.id})}" class="btn-primary">
 										<i class="fa fa-info"></i></a></td>
-									<td><a th:href="@{/update-course/{id}(id=${course.id})}" class="btn btn-primary">
+									<td><a th:href="@{/update-course/{id}(id=${course.id})}" class="btn-primary">
 										<i class="fas fa-pen-alt"></i></a></td>
-									<td><a th:href="@{/remove-course/{id}(id=${course.id})}" class="btn btn-primary" 
+									<td><a th:href="@{/remove-course/{id}(id=${course.id})}" class="btn-primary" 
 										onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
 								</tr>
 							</tbody>

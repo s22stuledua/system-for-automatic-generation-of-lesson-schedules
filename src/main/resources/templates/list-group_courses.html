@@ -20,7 +20,7 @@
 				<div th:switch="${groupCourses}" class="container">
 					<div>
 						<div class="button-container">
-							<a href="/add-group_course" class="btn btn-primary"><i class="fa fa-plus"> Pievienot kopējo kursu </i></a>
+							<a href="/add-group_course" class="btn-primary"><i class="fa fa-plus"> Pievienot kopējo kursu </i></a>
 						</div>
 						<div class="line-separator"></div>
 						<p>Kopējo kursu skaits: <span th:text="${rowCount}"></span></p>
@@ -40,9 +40,9 @@
 									<td th:text="${group_course.group1.title}"></td>
 									<td th:text="${group_course.group2.title}"></td>
 									<td th:text="${group_course.course.title}"></td>
-									<td><a th:href="@{/update-group_course/{id}(id=${group_course.id})}" class="btn btn-primary">
+									<td><a th:href="@{/update-group_course/{id}(id=${group_course.id})}" class="btn-primary">
 										<i class="fas fa-pen-alt"></i></a></td>
-									<td><a th:href="@{/remove-group_course/{id}(id=${group_course.id})}" class="btn btn-primary" 
+									<td><a th:href="@{/remove-group_course/{id}(id=${group_course.id})}" class="btn-primary" 
 										onclick="return confirmDeletion()"><i class="fas fa-trash-alt"></i></a></td>
 								</tr>
 							</tbody>

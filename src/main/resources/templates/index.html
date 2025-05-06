@@ -30,7 +30,7 @@
                         <option value="" selected>--Atlasiet grupu--</option>
                         <option th:each="group : ${groups}" th:value="${group.title}" th:text="${group.title}"></option>
                     </select>
-                    <button type="submit" class="btn btn-primary"> Filtrēt </button>
+                    <button type="submit" class="btn-primary"> Filtrēt </button>
                 </form>
                 <form action="/" method="get">
                     <label>Atlasiet auditoriju:</label>
@@ -38,7 +38,7 @@
                         <option value="" selected>--Atlasiet auditoriju--</option>
                         <option th:each="classroom : ${classrooms}" th:value="${classroom.title}" th:text="${classroom.title}"></option>
                     </select>
-                    <button type="submit" class="btn btn-primary"> Filtrēt </button>
+                    <button type="submit" class="btn-primary"> Filtrēt </button>
                 </form>
                 <form action="/" method="get">
                     <label>Atlasiet pasniedzēju:</label>
@@ -46,13 +46,13 @@
                         <option value="" selected>--Atlasiet pasniedzēju--</option>
                         <option th:each="teacher : ${teachers}" th:value="${teacher.name}" th:text="${teacher.name}"></option>
                     </select>
-                    <button type="submit" class="btn btn-primary"> Filtrēt </button>
+                    <button type="submit" class="btn-primary"> Filtrēt </button>
                 </form>
             </div>
             <div class="content" style="padding: 5px;"></div>
             <div class="button-container">
                 <a th:href="@{/(startDate=${startDate.minusDays(7)}, groupTitle=${groupTitle}, 
-                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Iepriekšējā nedēļa</a>
+                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn-primary"><i class="fa fa-arrow-left"></i> Iepriekšējā nedēļa</a>
                 <div th:with="scheduleList=${schedules}, currentGroup=${groupTitle}, 
                 currentClassroom=${classroomTitle}, currentTeacher=${teacherName}">
                     <div th:each="schedule, iterStat : ${scheduleList}" th:if="${iterStat.index == 0}">
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <a th:href="@{/(startDate=${startDate.plusDays(7)}, groupTitle=${groupTitle}, 
-                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn btn-primary">Nākamā nedēļa <i class="fa fa-arrow-right"></i></a>
+                classroomTitle=${classroomTitle}, teacherName=${teacherName})}" class="btn-primary">Nākamā nedēļa <i class="fa fa-arrow-right"></i></a>
             </div>
             <div class="line-separator"></div>
             <div class="calendar">

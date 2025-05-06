@@ -17,7 +17,7 @@
     <div class="container">
         <h3>Pievienot kopējo kursu</h3>
         <div class="card">
-			<a href="/group_courses" class="btn btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
+			<a href="/group_courses" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
             <div class="card-body">
                 <form action="#" th:action="@{/add-group_course}" th:object="${groupCourse}" method="post">
                     <div class="form-group">
@@ -44,7 +44,7 @@
 						</select>
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('course')}" th:errors="*{course}"></div>
 					</div>
-					<input type="submit" style="position: relative; right: -135px;" class="btn btn-primary" value="Iesniegt">
+					<input type="submit" style="position: relative; right: -135px;" class="btn-primary" value="Iesniegt">
                 </form>
             </div>
             <div th:if="${errormsg}" class="errormsg" th:text="${errormsg}"></div>
