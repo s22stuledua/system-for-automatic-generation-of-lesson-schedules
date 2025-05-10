@@ -21,7 +21,7 @@
             <div class="card-body">
                 <form action="#" th:action="@{/add-group_course}" th:object="${groupCourse}" method="post">
                     <div class="form-group">
-						<label>Grupa Nr.1</label> 
+						<label>Grupa Nr. 1</label> 
                         <select th:field="*{group1}" class="form-control" th:classappend="${#fields.hasErrors('group1')}? 'is-invalid' : ''">
 							<option value="" selected>-- Atlasiet grupu --</option>
 							   <option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.title}"></option>
@@ -29,7 +29,7 @@
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('group1')}" th:errors="*{group1}"></div>
 					</div>
                     <div class="form-group">
-						<label>Grupa Nr.2</label> 
+						<label>Grupa Nr. 2</label> 
                         <select th:field="*{group2}" class="form-control" th:classappend="${#fields.hasErrors('group2')}? 'is-invalid' : ''">
 							<option value="" selected>-- Atlasiet grupu --</option>
 							   <option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.title}"></option>

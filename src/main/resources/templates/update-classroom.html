@@ -28,7 +28,7 @@
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('numberOfSeats')}" th:errors="*{numberOfSeats}"></div>
                     </div>
                     <div class="form-group">
-						<label>Aprīkojums Nr.1</label>
+						<label>Aprīkojums Nr. 1</label>
 						<select th:field ="*{equipment1}" class="form-control">
 							<option value="" selected>-- Atlasiet aprīkojumu --</option>
 							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
@@ -38,7 +38,7 @@
 						</select>
 					</div>
                     <div class="form-group">
-						<label>Aprīkojums Nr.2</label>
+						<label>Aprīkojums Nr. 2</label>
 						<select th:field ="*{equipment2}" class="form-control">
 							<option value="" selected>-- Atlasiet aprīkojumu --</option>
 							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
@@ -48,7 +48,7 @@
 						</select>
 					</div>
                     <div class="form-group">
-						<label>Aprīkojums Nr.3</label>
+						<label>Aprīkojums Nr. 3</label>
 						<select th:field ="*{equipment3}" class="form-control">
 							<option value="" selected>-- Atlasiet aprīkojumu --</option>
 							<option th:each="equipment : ${T(vea.model.Equipment).values()}"
@@ -58,7 +58,7 @@
 						</select>
 					</div>
                     <div class="form-group">
-						<label>Aprīkojums Nr.4</label>
+						<label>Aprīkojums Nr. 4</label>
 						<select th:field ="*{equipment4}" class="form-control">
 							<option value="" selected>-- Atlasiet aprīkojumu --</option>
 							<option th:each="equipment : ${T(vea.model.Equipment).values()}"

@@ -69,7 +69,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private Settings settings;
 
     @Transactional
-    private void initConfig() {
+    private void initSettings() {
         Optional<Settings> settingsOptional = settingsRepo.findById(1L);
         this.settings = settingsOptional.orElseGet(Settings::new);
     }
@@ -164,13 +164,22 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public void generateSchedule(LocalDate startDate, Semester selectedSemester) {
-        initConfig();
+        initSettings();
         deleteAllSchedules();
 
         List<Group> groups = groupRepo.findAll();
         List<Course> courses = courseRepo.findAll();
         List<GroupCourse> groupCourses = groupCourseRepo.findAll();
         List<Classroom> classrooms = classroomRepo.findAll();
+        Optional<Classroom> onlineClassroom = classrooms.stream()
+                .filter(classroom -> "Attālināti / Online".equals(classroom.getTitle())).findFirst();
+        if (!onlineClassroom.isPresent()) {
+            Classroom newOnlineClassroom = new Classroom();
+            newOnlineClassroom.setTitle("Attālināti / Online");
+            newOnlineClassroom.setNumberOfSeats(0);
+            classroomRepo.save(newOnlineClassroom);
+        }
+        classrooms = classroomRepo.findAll();
         List<Holiday> holidays = holidayRepo.findAll();
         Set<LocalDate> skipDates = holidays.stream().map(Holiday::getDate).collect(Collectors.toSet());
 
@@ -222,8 +231,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private List<Schedule> scheduleCourseForGroupCourse(Group group1, Group group2, Course course, List<Classroom> classrooms,
-                                    Map<Teacher, LocalDateTime> teacherAvailability, Map<Classroom, LocalDateTime> classroomAvailability,
-                                    LocalDate startDate, LocalDate endDate, Set<LocalDate> skipDates) {
+                                                    Map<Teacher, LocalDateTime> teacherAvailability, Map<Classroom, LocalDateTime> classroomAvailability,
+                                                    LocalDate startDate, LocalDate endDate, Set<LocalDate> skipDates) {
         List<Schedule> scheduledLessons = new ArrayList<>();
         Map<LocalDate, Integer> lessonsPerDate = lessonsPerDateMap.computeIfAbsent(group1, k -> new HashMap<>());
         Map<Integer, Integer> lessonsPerWeek = lessonsPerWeekMap.computeIfAbsent(group1, k -> new HashMap<>());
@@ -234,8 +243,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         int combinedNumberOfStudents = group1.getNumberOfStudents() + group2.getNumberOfStudents();
         
         scheduleCourseForGroups(group1, group2, course, classrooms, teacherAvailability, classroomAvailability,
-        startDate, endDate, skipDates, scheduledLessons, predefinedTimes, lessonsPerDate,
-        lessonsPerWeek, courseWeeklyCount, courseTwoWeekCount, groupScheduleOnDate, combinedNumberOfStudents);
+                            startDate, endDate, skipDates, scheduledLessons, predefinedTimes, lessonsPerDate,
+                            lessonsPerWeek, courseWeeklyCount, courseTwoWeekCount, groupScheduleOnDate, combinedNumberOfStudents);
 
         lessonsPerDateMap.put(group2, new HashMap<>(lessonsPerDate));
         lessonsPerWeekMap.put(group2, new HashMap<>(lessonsPerWeek));
@@ -275,17 +284,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                 for (LocalTime lessonStartTime : predefinedTimes) {
                     Set<LocalTime> scheduledTimes = groupScheduleOnDate.computeIfAbsent(currentDate, k -> new HashSet<>());
     
-                    if (scheduledTimes.contains(lessonStartTime)) {
-                        continue;
-                    }
-
+                    if (scheduledTimes.contains(lessonStartTime)) { continue; }
                     int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
                     
                     if (currentLessonsPerDate < settings.getMaxLessonsPerDateForGroup()) {
                         Teacher teacher = selectTeacher(course, courseLessonsScheduled);
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
     
-                        if (canScheduleLesson(teacher, currentDate, weekNumber) && !scheduledTimes.contains(lessonStartTime) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
+                        if (canScheduleLesson(teacher, currentDate, weekNumber) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
                             Classroom classroom = findAvailableClassroom(teacher, group1, course, classrooms, currentDate, lessonStartTime, numberOfStudents);
     
                             if (classroom != null) {
@@ -295,15 +301,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 scheduledLessons.add(lessonForGroup2);
                                 updateTeacherAvailability(teacher, lessonDateTime, teacherAvailability);
                                 updateTeacherCount(teacher, currentDate, weekNumber);
-                                lessonsPerDate.merge(currentDate, 1, Integer::sum);
-                                lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
-                                currentCourseWeeklyCountMap.merge(course, 1, Integer::sum);
-                                currentCourseTwoWeekCountMap.merge(course, 1, Integer::sum);
+                                updateScheduleCount(currentDate, weekNumber, course, lessonStartTime, lessonsPerDate, lessonsPerWeek, 
+                                                currentCourseWeeklyCountMap, currentCourseTwoWeekCountMap, scheduledTimes);
                                 courseLessonsScheduled++;
-                                scheduledTimes.add(lessonStartTime);
     
-                                if (shouldBreakScheduling(courseLessonsScheduled, course, currentDate, weekNumber, currentCourseWeeklyCountMap, 
-                                currentCourseTwoWeekCountMap, lessonsPerDate, lessonsPerWeek)) {
+                                if (shouldBreakScheduling(courseLessonsScheduled, course, currentDate, weekNumber, 
+                                currentCourseWeeklyCountMap, currentCourseTwoWeekCountMap, lessonsPerDate, lessonsPerWeek)) {
                                     break;
                                 }
                             }
@@ -374,9 +377,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         int courseLimitPerTwoWeeks = getCourseLimitPerTwoWeeks(course);
         int courseLessonsScheduled = 0;
 
-        if (occupiedTimes == null) {
-            occupiedTimes = new HashMap<>();
-        }
+        if (occupiedTimes == null) { occupiedTimes = new HashMap<>(); }
 
         while (currentDate.isBefore(endDate) && courseLessonsScheduled < course.getNumberOfLessons()) {
             if (skipDates.contains(currentDate) || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
@@ -399,17 +400,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                     Set<LocalTime> scheduledTimes = groupScheduleOnDate.computeIfAbsent(currentDate, k -> new HashSet<>());
                     Set<LocalTime> currentOccupiedTimes = occupiedTimes.computeIfAbsent(currentDate, k -> new HashSet<>());
 
-                    if (scheduledTimes.contains(lessonStartTime) || currentOccupiedTimes.contains(lessonStartTime)) {
-                        continue; 
-                    }
-
+                    if (scheduledTimes.contains(lessonStartTime) || currentOccupiedTimes.contains(lessonStartTime)) { continue; }
                     int currentLessonsPerDate = lessonsPerDate.getOrDefault(currentDate, 0);
 
                     if (currentLessonsPerDate < settings.getMaxLessonsPerDateForGroup()) {
                         Teacher teacher = selectTeacher(course, courseLessonsScheduled);
                         LocalDateTime lessonDateTime = LocalDateTime.of(currentDate, lessonStartTime);
 
-                        if (canScheduleLesson(teacher, currentDate, weekNumber) && !scheduledTimes.contains(lessonStartTime) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
+                        if (canScheduleLesson(teacher, currentDate, weekNumber) && isTeacherAvailable(teacher, lessonDateTime, scheduledLessons)) {
                             Classroom classroom = findAvailableClassroom(teacher, group, course, classrooms, currentDate, lessonStartTime);
                             
                             if (classroom != null && !occupiedTimes.getOrDefault(currentDate, new HashSet<>()).contains(lessonStartTime)) {
@@ -417,16 +415,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 scheduledLessons.add(lesson);
                                 updateTeacherAvailability(teacher, lessonDateTime, teacherAvailability);
                                 updateTeacherCount(teacher, currentDate, weekNumber);
-                                lessonsPerDate.merge(currentDate, 1, Integer::sum);
-                                lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
-                                currentCourseWeeklyCountMap.merge(course, 1, Integer::sum);
-                                currentCourseTwoWeekCountMap.merge(course, 1, Integer::sum);
+                                updateScheduleCount(currentDate, weekNumber, course, lessonStartTime, lessonsPerDate, lessonsPerWeek, 
+                                                currentCourseWeeklyCountMap, currentCourseTwoWeekCountMap, scheduledTimes);
                                 courseLessonsScheduled++;
-                                scheduledTimes.add(lessonStartTime);
                                 currentOccupiedTimes.add(lessonStartTime); 
                                 
-                                if (shouldBreakScheduling(courseLessonsScheduled, course, currentDate, weekNumber, currentCourseWeeklyCountMap, 
-                                currentCourseTwoWeekCountMap, lessonsPerDate, lessonsPerWeek)) {
+                                if (shouldBreakScheduling(courseLessonsScheduled, course, currentDate, weekNumber, 
+                                currentCourseWeeklyCountMap, currentCourseTwoWeekCountMap, lessonsPerDate, lessonsPerWeek)) {
                                     break;
                                 }
                             }
@@ -504,7 +499,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .findByTeacherAndDate(teacher, lessonDateTime.toLocalDate());
 
         boolean isUnavailable = unavailabilityList.stream().anyMatch(unavailability ->
-                (unavailability.getStartTime().equals(predefinedTimes.get(0)) && unavailability.getEndTime().equals(predefinedTimes.get(predefinedTimes.size()-1)))
+                (unavailability.getStartTime().equals(predefinedTimes.get(0)) && 
+                unavailability.getEndTime().equals(predefinedTimes.get(predefinedTimes.size()-1)))
                 || (!lessonDateTime.toLocalTime().isBefore(unavailability.getStartTime()) && 
                     lessonDateTime.toLocalTime().isBefore(unavailability.getEndTime()))
         );
@@ -517,89 +513,64 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
     
     private void updateTeacherAvailability(Teacher teacher, LocalDateTime lessonDateTime, 
-                                           Map<Teacher, LocalDateTime> teacherAvailability) {
+                                        Map<Teacher, LocalDateTime> teacherAvailability) {
         teacherAvailability.put(teacher, lessonDateTime);
     }
 
     private void updateTeacherCount(Teacher teacher, LocalDate currentDate, int weekNumber) {
         Map<Integer, Integer> weeklyCountMap = teacherWeeklyCount.computeIfAbsent(teacher, k -> new HashMap<>());
         weeklyCountMap.merge(weekNumber, 1, Integer::sum);
-        
         Map<LocalDate, Integer> dailyCountMap = teacherDailyCount.computeIfAbsent(teacher, k -> new HashMap<>());
         dailyCountMap.merge(currentDate, 1, Integer::sum);
     }
 
-    private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, List<Classroom> classrooms, LocalDate date, LocalTime time, int numberOfStudents) {
+    private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, 
+                                        List<Classroom> classrooms, LocalDate date, LocalTime time, int numberOfStudents) {
+        return findClassroom(teacher, group, course, classrooms, date, time, numberOfStudents);
+    }
+
+    private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, 
+                                        List<Classroom> classrooms, LocalDate date, LocalTime time) {
+        return findClassroom(teacher, group, course, classrooms, date, time, group.getNumberOfStudents());
+    }
+
+    private Classroom findClassroom(Teacher teacher, Group group, Course course, List<Classroom> classrooms, 
+                                LocalDate date, LocalTime time, int numberOfStudents) {
+        Classroom bestClassroom = null;
+        int smallestSeatDifference = Integer.MAX_VALUE;
         for (Classroom classroom : classrooms) {
+            if (teacher.getOnlyOnline() && "Attālināti / Online".equals(classroom.getTitle())) {
+                return classroom;
+            }
             if (teacher.getUnteachableClassrooms().contains(classroom)) {
                 continue;
             }
             if (classroom.getNumberOfSeats() < numberOfStudents) {
                 continue;
             }
-            if (teacher.getOnlyOnline() && "Attālināti / Online".equals(classroom.getTitle())) {
-                return classroom;
-            }
-            if (!teacher.getOnlyOnline()) {
-                if (isClassroomAvailable(classroom, teacher, course, date, time)) {
-                    if (course.hasTwoTeachers()) {
-                        if (teacher.equals(course.getTeacher1())) {
-                            if (matchesEquipment(classroom, course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4())) {
-                                return classroom;
-                            }
-                        } else if (teacher.equals(course.getTeacher2())) {
-                            if (matchesEquipment(classroom, course.getEquipment5(), course.getEquipment6(), course.getEquipment7(), course.getEquipment8())) {
-                                return classroom;
-                            }
-                        }
-                    } else {
-                        if (matchesEquipment(classroom, course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4())) {
-                            return classroom;
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (requiresOnlyOnlineEquipment(teacher, course)) {
-            for (Classroom classroom : classrooms) {
-                if ("Attālināti / Online".equals(classroom.getTitle())) {
-                    return classroom;
-                }
-            }
-        }
-        
-        return null;
-    }
-    
-    private Classroom findAvailableClassroom(Teacher teacher, Group group, Course course, List<Classroom> classrooms, LocalDate date, LocalTime time) {
-        for (Classroom classroom : classrooms) {
-            if (teacher.getUnteachableClassrooms().contains(classroom)) {
-                continue;
-            }
-            if (classroom.getNumberOfSeats() < group.getNumberOfStudents()) {
-                continue;
-            }
-            if (teacher.getOnlyOnline() && "Attālināti / Online".equals(classroom.getTitle())) {
-                return classroom;
-            }
+            int seatDifference = classroom.getNumberOfSeats() - numberOfStudents;
             if (!teacher.getOnlyOnline() && isClassroomAvailable(classroom, teacher, course, date, time)) {
+                boolean equipmentMatches = false;
                 if (course.hasTwoTeachers()) {
                     if (teacher.equals(course.getTeacher1())) {
-                        if (matchesEquipment(classroom, course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4())) {
-                            return classroom;
-                        }
+                        equipmentMatches = matchesEquipment(classroom, course.getEquipment1(), 
+                        course.getEquipment2(), course.getEquipment3(), course.getEquipment4());
                     } else if (teacher.equals(course.getTeacher2())) {
-                        if (matchesEquipment(classroom, course.getEquipment5(), course.getEquipment6(), course.getEquipment7(), course.getEquipment8())) {
-                            return classroom;
-                        }
+                        equipmentMatches = matchesEquipment(classroom, course.getEquipment5(), 
+                        course.getEquipment6(), course.getEquipment7(), course.getEquipment8());
                     }
                 } else {
-                    if (matchesEquipment(classroom, course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4())) {
-                        return classroom;
-                    }
+                    equipmentMatches = matchesEquipment(classroom, course.getEquipment1(), 
+                    course.getEquipment2(), course.getEquipment3(), course.getEquipment4());
+                }
+                if (equipmentMatches && seatDifference < smallestSeatDifference) {
+                    smallestSeatDifference = seatDifference;
+                    bestClassroom = classroom;
                 }
             }
+        }
+        if (bestClassroom != null) {
+            return bestClassroom;
         }
         if (requiresOnlyOnlineEquipment(teacher, course)) {
             for (Classroom classroom : classrooms) {
@@ -632,9 +603,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private boolean requiresOnlyOnlineEquipment(Teacher teacher, Course course) {
-        Equipment[] permittedEquipment = {Equipment.Datorklase, Equipment.Projektors, Equipment.Ekrāns, Equipment.Tāfele_interaktīvā};
-        Equipment[] courseEquipment1 = {course.getEquipment1(), course.getEquipment2(), course.getEquipment3(), course.getEquipment4()};
-        Equipment[] courseEquipment2 = {course.getEquipment5(), course.getEquipment6(), course.getEquipment7(), course.getEquipment8()};
+        Equipment[] permittedEquipment = {Equipment.Datorklase, 
+            Equipment.Projektors, Equipment.Ekrāns, Equipment.Tāfele_interaktīvā};
+        Equipment[] courseEquipment1 = {course.getEquipment1(), 
+            course.getEquipment2(), course.getEquipment3(), course.getEquipment4()};
+        Equipment[] courseEquipment2 = {course.getEquipment5(), 
+            course.getEquipment6(), course.getEquipment7(), course.getEquipment8()};
 
         if (course.hasTwoTeachers()) {
             if (teacher.equals(course.getTeacher1())) {
@@ -696,8 +670,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-    private void updateLessonCounts(Course course, int weekNumber, int twoWeekNumber, Map<Integer, Integer> lessonsPerWeek,
-                                Map<Integer, Map<Course, Integer>> courseWeeklyCount, Map<Integer, Map<Course, Integer>> courseTwoWeekCount) {
+    private void updateLessonCounts(Course course, int weekNumber, int twoWeekNumber, 
+                                Map<Integer, Integer> lessonsPerWeek, Map<Integer, Map<Course, Integer>> courseWeeklyCount, 
+                                Map<Integer, Map<Course, Integer>> courseTwoWeekCount) {
         lessonsPerWeek.putIfAbsent(weekNumber, 0);
         courseWeeklyCount.putIfAbsent(weekNumber, new HashMap<>());
         courseTwoWeekCount.putIfAbsent(twoWeekNumber, new HashMap<>());
@@ -707,9 +682,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         currentCourseTwoWeekCountMap.putIfAbsent(course, 0);
     }
 
+    private void updateScheduleCount(LocalDate currentDate, int weekNumber, Course currentCourse, LocalTime lessonStartTime,
+                                Map<LocalDate, Integer> lessonsPerDate, Map<Integer, Integer> lessonsPerWeek,
+                                Map<Course, Integer> currentCourseWeeklyCountMap, Map<Course, Integer> currentCourseTwoWeekCountMap,
+                                Set<LocalTime> scheduledTimes) {
+        lessonsPerDate.merge(currentDate, 1, Integer::sum);
+        lessonsPerWeek.merge(weekNumber, 1, Integer::sum);
+        currentCourseWeeklyCountMap.merge(currentCourse, 1, Integer::sum);
+        currentCourseTwoWeekCountMap.merge(currentCourse, 1, Integer::sum);
+        scheduledTimes.add(lessonStartTime);
+    }
+
     private boolean shouldBreakScheduling(int courseLessonsScheduled, Course course, LocalDate currentDate, int weekNumber,
-                                    Map<Course, Integer> currentCourseWeeklyCountMap, Map<Course, Integer> currentCourseTwoWeekCountMap,
-                                    Map<LocalDate, Integer> lessonsPerDate, Map<Integer, Integer> lessonsPerWeek) {
+                                        Map<Course, Integer> currentCourseWeeklyCountMap, Map<Course, Integer> currentCourseTwoWeekCountMap,
+                                        Map<LocalDate, Integer> lessonsPerDate, Map<Integer, Integer> lessonsPerWeek) {
         return courseLessonsScheduled >= course.getNumberOfLessons() ||
                lessonsPerDate.get(currentDate) >= settings.getMaxLessonsPerDateForGroup() || 
                lessonsPerWeek.get(weekNumber) >= settings.getMaxLessonsPerWeekForGroup() ||

@@ -5,7 +5,7 @@
 	<link rel="icon" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="http://localhost/system-for-automatic-generation-of-lesson-schedules/src/main/resources/style.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
-	<style>.card-body { display: block; }</style>
+	<style>.card-body { display: block; } a.btn-primary { font-size: 13px; }</style>
 	<script>
         function confirmDeletion() {
             return confirm("Vai tiešām vēlaties dzēst grafiku?")
@@ -34,8 +34,12 @@
 						        </select>
 							    <button type="submit" class="btn-primary"> Ģenerēt grafiku </button>
 						    </form>
-							<a href="/delete-schedule" onclick="confirmDeletion()" class="btn-primary"> Dzēst grafiku </a>
-							<a href="/add-lesson" class="btn-primary"><i class="fa fa-plus"> Pievienot lekciju </i></a>
+							<div>
+								<a href="/delete-schedule" onclick="confirmDeletion()" class="btn-primary"> Dzēst grafiku </a>
+							</div>
+							<div>
+								<a href="/add-lesson" class="btn-primary"><i class="fa fa-plus"></i> Pievienot lekciju </a>
+							</div>
 						</div>
 						<div class="content" style="padding: 5px;"></div>
 						<div class="button-container">

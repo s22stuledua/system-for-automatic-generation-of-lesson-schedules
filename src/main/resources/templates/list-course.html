@@ -26,11 +26,12 @@
 					<div class="button-container">
 						<a href="/courses" class="btn-primary"><i class="fa fa-reply"> Atpakaļ </i></a>
 						<a th:each="course : ${courses}">
+							<a th:text="'Sīkāka informācija par ' + ${course.title}" style="font-size: 2em;"></a>
 							<a th:href="@{/edit-course/{id}(id=${course.id})}" class="btn-primary">
 								<i class="fas fa-user-edit ml-2"> Rediģēt </i></a>
 							<a th:href="@{/remove-course/{id}(id=${course.id})}" class="btn-primary" 
 							onclick="return confirmDeletion()"><i class="fas fa-user-times ml-2"> Dzēst </i></a>
-							<a th:text="'Sīkāka informācija par ' + ${course.title}" style="font-size: 2em;"></a>
+							
 						</a>
 					</div>
 					<div class="line-separator"></div>
@@ -52,10 +53,10 @@
 						</tbody>
 						<thead>
 							<tr>
-								<th>Aprīkojums Nr.1</th>
-								<th>Aprīkojums Nr.2</th>
-								<th>Aprīkojums Nr.3</th>
-								<th>Aprīkojums Nr.4</th>
+								<th>Aprīkojums Nr. 1</th>
+								<th>Aprīkojums Nr. 2</th>
+								<th>Aprīkojums Nr. 3</th>
+								<th>Aprīkojums Nr. 4</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -68,10 +69,10 @@
 						</tbody>
 						<thead>
 							<tr>
-								<th>Aprīkojums Nr.5</th>
-								<th>Aprīkojums Nr.6</th>
-								<th>Aprīkojums Nr.7</th>
-								<th>Aprīkojums Nr.8</th>
+								<th>Aprīkojums Nr. 5</th>
+								<th>Aprīkojums Nr. 6</th>
+								<th>Aprīkojums Nr. 7</th>
+								<th>Aprīkojums Nr. 8</th>
 							</tr>
 						</thead>
 						<tbody>
