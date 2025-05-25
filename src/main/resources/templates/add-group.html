@@ -27,6 +27,18 @@
 						<div class="invalid-feedback" th:if="${#fields.hasErrors('numberOfStudents')}" th:errors="*{numberOfStudents}"></div>
 					</div>
 					<div class="form-group">
+						<label>Semestris</label> 
+                        <select th:field ="*{semester}" class="form-control"
+						    th:classappend="${#fields.hasErrors('semester')}? 'is-invalid' : ''">
+							<option value="" selected>-- Atlasiet semestri --</option>
+							<option th:each="semester : ${T(vea.model.Semester).values()}"
+							     th:value="${semester}"
+							     th:text="${semester}">
+							</option>
+						</select>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('semester')}" th:errors="*{semester}"></div>
+					</div>
+					<div class="form-group">
 						<label>Kurss Nr. 1</label>
 						<select th:field ="*{course1}" class="form-control">
 							<option value="" selected>-- Atlasiet kursu --</option>
@@ -102,18 +114,6 @@
 							<option value="" selected>-- Atlasiet kursu --</option>
 							   <option th:each="course: ${course}" th:value="${course.id}" th:text="${course.title}"></option>
 						</select>
-					</div>
-					<div class="form-group">
-						<label>Semestris</label> 
-                        <select th:field ="*{semester}" class="form-control"
-						    th:classappend="${#fields.hasErrors('semester')}? 'is-invalid' : ''">
-							<option value="" selected>-- Atlasiet semestri --</option>
-							<option th:each="semester : ${T(vea.model.Semester).values()}"
-							     th:value="${semester}"
-							     th:text="${semester}">
-							</option>
-						</select>
-						<div class="invalid-feedback" th:if="${#fields.hasErrors('semester')}" th:errors="*{semester}"></div>
 					</div>
 					<div class="form-group">
 						<label>Šis ir pēdējais semestris</label> 
